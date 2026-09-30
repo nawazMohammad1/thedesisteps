@@ -1,15 +1,22 @@
 /* =====================================================
    DESISTEPS — SHOES PAGE JAVASCRIPT
+   Final Version
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
-  const $ = (selector, parent = document) => parent.querySelector(selector);
+  /* =====================================================
+     HELPERS
+  ===================================================== */
 
-  const $$ = (selector, parent = document) => [
-    ...parent.querySelectorAll(selector),
-  ];
+  const $ = (selector, parent = document) =>
+    parent.querySelector(selector);
 
-  /* PRELOADER */
+  const $$ = (selector, parent = document) =>
+    [...parent.querySelectorAll(selector)];
+
+  /* =====================================================
+     PRELOADER
+  ===================================================== */
 
   const preloader = $(".preloader");
 
@@ -19,66 +26,116 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("load", hidePreloader);
 
-  // Fallback in case an image takes too long to load.
+  // Fallback so the page never remains stuck on the loader.
   setTimeout(hidePreloader, 2500);
 
-  /* NAVBAR */
+  /* =====================================================
+     NAVBAR
+  ===================================================== */
 
   const navbar = $(".navbar");
 
   const updateNavbar = () => {
-    navbar?.classList.toggle("scrolled", window.scrollY > 30);
+    navbar?.classList.toggle(
+      "scrolled",
+      window.scrollY > 30
+    );
   };
 
-  window.addEventListener("scroll", updateNavbar, {
-    passive: true,
-  });
+  window.addEventListener(
+    "scroll",
+    updateNavbar,
+    { passive: true }
+  );
 
   updateNavbar();
 
-  /* MOBILE MENU */
+  /* =====================================================
+     MOBILE MENU
+  ===================================================== */
 
   const menuToggle = $(".menu-toggle");
   const mobileMenu = $(".mobile-menu");
 
   function closeMobileMenu() {
     mobileMenu?.classList.remove("active");
-    menuToggle?.setAttribute("aria-expanded", "false");
+
+    menuToggle?.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+
     document.body.classList.remove("menu-open");
   }
 
-  menuToggle?.addEventListener("click", () => {
-    const isOpen = mobileMenu.classList.toggle("active");
+  function openMobileMenu() {
+    mobileMenu?.classList.add("active");
 
-    menuToggle.setAttribute("aria-expanded", String(isOpen));
-    document.body.classList.toggle("menu-open", isOpen);
+    menuToggle?.setAttribute(
+      "aria-expanded",
+      "true"
+    );
+
+    document.body.classList.add("menu-open");
+  }
+
+  menuToggle?.addEventListener("click", () => {
+    const isOpen =
+      mobileMenu?.classList.contains("active");
+
+    if (isOpen) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
   });
 
   $$(".mobile-menu a").forEach((link) => {
-    link.addEventListener("click", closeMobileMenu);
+    link.addEventListener(
+      "click",
+      closeMobileMenu
+    );
   });
 
-  /* SEARCH OVERLAY */
+  /* =====================================================
+     SEARCH OVERLAY
+  ===================================================== */
 
   const searchOverlay = $(".search-overlay");
   const searchInput = $("#shoeSearch");
   const searchTrigger = $(".search-trigger");
   const closeSearch = $(".close-search");
+  const searchButton = $("#searchButton");
 
   function openSearch() {
     searchOverlay?.classList.add("active");
+
     document.body.classList.add("search-open");
 
-    setTimeout(() => searchInput?.focus(), 200);
+    setTimeout(() => {
+      searchInput?.focus();
+    }, 200);
   }
 
   function hideSearch() {
     searchOverlay?.classList.remove("active");
+
     document.body.classList.remove("search-open");
   }
 
-  searchTrigger?.addEventListener("click", openSearch);
-  closeSearch?.addEventListener("click", hideSearch);
+  searchTrigger?.addEventListener(
+    "click",
+    openSearch
+  );
+
+  closeSearch?.addEventListener(
+    "click",
+    hideSearch
+  );
+
+  /* =====================================================
+     ESCAPE KEY
+  ===================================================== */
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
@@ -87,13 +144,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* PRODUCT FILTERING + SEARCH */
+  /* =====================================================
+     PRODUCT FILTERING + SEARCH
+  ===================================================== */
 
   const productCards = $$(".product-card");
   const filterButtons = $$(".filter-btn");
+
   const productCount = $("#productCount");
   const noResults = $(".no-results");
-  const searchButton = $("#searchButton");
 
   let activeCategory = "all";
   let searchTerm = "";
@@ -102,17 +161,26 @@ document.addEventListener("DOMContentLoaded", () => {
     let visibleCount = 0;
 
     productCards.forEach((card) => {
-      const category = card.dataset.category || "";
-      const name = card.dataset.name || "";
+      const category =
+        (
+          card.dataset.category || ""
+        ).toLowerCase();
+
+      const name =
+        (
+          card.dataset.name || ""
+        ).toLowerCase();
 
       const matchesCategory =
-        activeCategory === "all" || category === activeCategory;
+        activeCategory === "all" ||
+        category === activeCategory;
 
       const matchesSearch =
-        name.toLowerCase().includes(searchTerm) ||
-        category.toLowerCase().includes(searchTerm);
+        name.includes(searchTerm) ||
+        category.includes(searchTerm);
 
-      const visible = matchesCategory && matchesSearch;
+      const visible =
+        matchesCategory && matchesSearch;
 
       card.hidden = !visible;
 
@@ -121,30 +189,59 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    /* PRODUCT COUNT */
+
     if (productCount) {
-      productCount.textContent = visibleCount;
+      productCount.textContent =
+        visibleCount;
     }
 
+    /* NO RESULTS */
+
     if (noResults) {
-      noResults.hidden = visibleCount !== 0;
+      noResults.hidden =
+        visibleCount !== 0;
     }
   }
 
+  /* FILTER BUTTONS */
+
   filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      activeCategory = button.dataset.filter || "all";
+    button.addEventListener(
+      "click",
+      () => {
+        activeCategory =
+          (
+            button.dataset.filter ||
+            "all"
+          ).toLowerCase();
 
-      filterButtons.forEach((item) => {
-        item.classList.toggle("active", item === button);
-      });
+        filterButtons.forEach((item) => {
+          item.classList.toggle(
+            "active",
+            item === button
+          );
+        });
 
-      updateProducts();
-    });
+        updateProducts();
+      }
+    );
   });
 
+  /* =====================================================
+     SEARCH
+  ===================================================== */
+
   function runSearch() {
-    searchTerm = searchInput.value.trim().toLowerCase();
+    if (!searchInput) return;
+
+    searchTerm =
+      searchInput.value
+        .trim()
+        .toLowerCase();
+
     updateProducts();
+
     hideSearch();
 
     $("#all-shoes")?.scrollIntoView({
@@ -153,239 +250,462 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  searchButton?.addEventListener("click", runSearch);
+  searchButton?.addEventListener(
+    "click",
+    runSearch
+  );
 
-  searchInput?.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      runSearch();
-    }
-  });
-
-  /* CATEGORY SHORTCUTS */
-
-  $$("[data-category-link]").forEach((link) => {
-    link.addEventListener("click", () => {
-      const category = link.dataset.categoryLink;
-
-      activeCategory = category;
-      searchTerm = "";
-
-      if (searchInput) {
-        searchInput.value = "";
+  searchInput?.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        runSearch();
       }
+    }
+  );
 
-      filterButtons.forEach((button) => {
-        button.classList.toggle("active", button.dataset.filter === category);
-      });
+  /* =====================================================
+     CATEGORY SHORTCUTS
+  ===================================================== */
 
-      updateProducts();
-    });
-  });
+  $$("[data-category-link]").forEach(
+    (link) => {
+      link.addEventListener(
+        "click",
+        () => {
+          const category =
+            (
+              link.dataset.categoryLink ||
+              "all"
+            ).toLowerCase();
 
-  /* WISHLIST */
+          activeCategory = category;
+          searchTerm = "";
 
-  const wishlistCount = $(".wishlist-count");
-  const wishlistButtons = $$(".wishlist-product");
+          if (searchInput) {
+            searchInput.value = "";
+          }
+
+          filterButtons.forEach(
+            (button) => {
+              button.classList.toggle(
+                "active",
+                (
+                  button.dataset.filter ||
+                  "all"
+                ).toLowerCase() === category
+              );
+            }
+          );
+
+          updateProducts();
+        }
+      );
+    }
+  );
+
+  /* =====================================================
+     WISHLIST
+  ===================================================== */
+
+  const wishlistCount =
+    $(".wishlist-count");
+
+  const wishlistButtons =
+    $$(".wishlist-product");
 
   const wishlist = new Set();
 
   wishlistButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const card = button.closest(".product-card");
-      const productName = card?.dataset.name;
+    button.addEventListener(
+      "click",
+      () => {
+        const card =
+          button.closest(".product-card");
 
-      if (!productName) return;
+        const productName =
+          card?.dataset.name;
 
-      const icon = $("i", button);
+        if (!productName) return;
 
-      if (wishlist.has(productName)) {
-        wishlist.delete(productName);
-        button.classList.remove("active");
-        icon?.classList.remove("fa-solid");
-        icon?.classList.add("fa-regular");
-      } else {
-        wishlist.add(productName);
-        button.classList.add("active");
-        icon?.classList.remove("fa-regular");
-        icon?.classList.add("fa-solid");
+        const icon = $("i", button);
+
+        if (wishlist.has(productName)) {
+          /* REMOVE */
+
+          wishlist.delete(productName);
+
+          button.classList.remove(
+            "active"
+          );
+
+          icon?.classList.remove(
+            "fa-solid"
+          );
+
+          icon?.classList.add(
+            "fa-regular"
+          );
+        } else {
+          /* ADD */
+
+          wishlist.add(productName);
+
+          button.classList.add(
+            "active"
+          );
+
+          icon?.classList.remove(
+            "fa-regular"
+          );
+
+          icon?.classList.add(
+            "fa-solid"
+          );
+        }
+
+        /* UPDATE COUNT */
+
+        if (wishlistCount) {
+          wishlistCount.textContent =
+            wishlist.size;
+        }
+
+        /* BUTTON ANIMATION */
+
+        if (typeof button.animate === "function") {
+          button.animate(
+            [
+              {
+                transform: "scale(1)",
+              },
+              {
+                transform: "scale(1.18)",
+              },
+              {
+                transform: "scale(1)",
+              },
+            ],
+            {
+              duration: 250,
+              easing: "ease-out",
+            }
+          );
+        }
       }
-
-      if (wishlistCount) {
-        wishlistCount.textContent = wishlist.size;
-      }
-
-      button.animate(
-        [
-          { transform: "scale(1)" },
-          { transform: "scale(1.18)" },
-          { transform: "scale(1)" },
-        ],
-        { duration: 250 },
-      );
-    });
+    );
   });
 
-  /* BAG / ADD TO BAG */
+  /* =====================================================
+     BAG / ADD TO BAG
+  ===================================================== */
 
   let bagTotal = 0;
 
   const bagCount = $(".bag-count");
   const cartToast = $(".cart-toast");
-  const toastProduct = $(".toast-product");
+  const toastProduct =
+    $(".toast-product");
 
   let toastTimer;
 
-  $$(".quick-add").forEach((button) => {
-    button.addEventListener("click", () => {
-      const productName = button.dataset.product || "Selected shoes";
-
-      bagTotal++;
-
-      if (bagCount) {
-        bagCount.textContent = bagTotal;
-      }
-
-      if (toastProduct) {
-        toastProduct.textContent = productName;
-      }
-
-      cartToast?.classList.add("show");
-
-      clearTimeout(toastTimer);
-
-      toastTimer = setTimeout(() => {
-        cartToast?.classList.remove("show");
-      }, 2600);
-
-      const originalText = button.textContent;
-
-      button.textContent = "ADDED ✓";
-      button.classList.add("added");
-
-      setTimeout(() => {
-        button.textContent = originalText;
-        button.classList.remove("added");
-      }, 1200);
-    });
-  });
-
-  /* CART / WISHLIST BUTTON FEEDBACK */
-
-  $("#bagLink")?.addEventListener("click", () => {
-    cartToast?.classList.add("show");
-
+  function showCartToast(message) {
     if (toastProduct) {
       toastProduct.textContent =
-        bagTotal === 0
-          ? "Your bag is currently empty"
-          : `${bagTotal} item(s) added`;
+        message;
     }
+
+    cartToast?.classList.add("show");
 
     clearTimeout(toastTimer);
 
     toastTimer = setTimeout(() => {
-      cartToast?.classList.remove("show");
-    }, 2500);
-  });
-
-  $("#wishlistLink")?.addEventListener("click", () => {
-    const firstWishlisted = productCards.find((card) =>
-      wishlist.has(card.dataset.name),
-    );
-
-    if (firstWishlisted) {
-      firstWishlisted.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    } else {
-      $("#all-shoes")?.scrollIntoView({
-        behavior: "smooth",
-      });
-    }
-  });
-
-  /* SCROLL REVEAL */
-
-  const revealElements = $$(".reveal");
-
-  if ("IntersectionObserver" in window) {
-    const revealObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.12,
-      },
-    );
-
-    revealElements.forEach((element) => {
-      revealObserver.observe(element);
-    });
-  } else {
-    revealElements.forEach((element) => {
-      element.classList.add("visible");
-    });
+      cartToast?.classList.remove(
+        "show"
+      );
+    }, 2600);
   }
 
-  /* NEWSLETTER DEMO */
+  $$(".quick-add").forEach((button) => {
+    button.addEventListener(
+      "click",
+      () => {
+        const productName =
+          button.dataset.product ||
+          button.closest(".product-card")
+            ?.dataset.name ||
+          "Selected shoes";
 
-  const newsletterForm = $("#newsletterForm");
-  const newsletterEmail = $("#newsletterEmail");
-  const newsletterMessage = $(".newsletter-message");
+        bagTotal++;
 
-  newsletterForm?.addEventListener("submit", (event) => {
-    event.preventDefault();
+        /* UPDATE BAG COUNT */
 
-    if (!newsletterEmail?.checkValidity()) {
-      newsletterEmail?.reportValidity();
-      return;
-    }
+        if (bagCount) {
+          bagCount.textContent =
+            bagTotal;
+        }
 
-    if (newsletterMessage) {
-      newsletterMessage.textContent =
-        "Thank you for joining the DesiSteps list!";
-    }
+        /* SHOW TOAST */
 
-    newsletterForm.reset();
+        showCartToast(
+          `${productName} added to your bag`
+        );
+
+        /* BUTTON FEEDBACK */
+
+        const originalText =
+          button.textContent;
+
+        button.textContent =
+          "ADDED ✓";
+
+        button.classList.add(
+          "added"
+        );
+
+        setTimeout(() => {
+          button.textContent =
+            originalText;
+
+          button.classList.remove(
+            "added"
+          );
+        }, 1200);
+      }
+    );
   });
 
-  /* IMAGE FALLBACK */
+  /* =====================================================
+     BAG LINK
+  ===================================================== */
 
-  $$("img").forEach((image) => {
-    image.addEventListener("error", () => {
-      image.classList.add("image-unavailable");
-      image.alt = "Product image unavailable";
-    });
-  });
+  $("#bagLink")?.addEventListener(
+    "click",
+    (event) => {
+      event.preventDefault();
 
-  /* SMOOTH ANCHOR LINKS */
+      if (bagTotal === 0) {
+        showCartToast(
+          "Your bag is currently empty"
+        );
+      } else {
+        showCartToast(
+          `${bagTotal} item(s) added to your bag`
+        );
+      }
+    }
+  );
 
-  $$('a[href^="#"]').forEach((link) => {
-    link.addEventListener("click", (event) => {
-      const href = link.getAttribute("href");
+  /* =====================================================
+     WISHLIST LINK
+  ===================================================== */
 
-      if (!href || href === "#") {
-        event.preventDefault();
+  $("#wishlistLink")?.addEventListener(
+    "click",
+    (event) => {
+      event.preventDefault();
+
+      const firstWishlisted =
+        productCards.find((card) =>
+          wishlist.has(
+            card.dataset.name
+          )
+        );
+
+      if (firstWishlisted) {
+        firstWishlisted.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        firstWishlisted.classList.add(
+          "wishlist-highlight"
+        );
+
+        setTimeout(() => {
+          firstWishlisted.classList.remove(
+            "wishlist-highlight"
+          );
+        }, 1000);
+      } else {
+        $("#all-shoes")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  );
+
+  /* =====================================================
+     SCROLL REVEAL
+  ===================================================== */
+
+  const revealElements =
+    $$(".reveal");
+
+  if (
+    "IntersectionObserver" in window
+  ) {
+    const revealObserver =
+      new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (
+              entry.isIntersecting
+            ) {
+              entry.target.classList.add(
+                "visible"
+              );
+
+              revealObserver.unobserve(
+                entry.target
+              );
+            }
+          });
+        },
+        {
+          threshold: 0.12,
+          rootMargin:
+            "0px 0px -40px 0px",
+        }
+      );
+
+    revealElements.forEach(
+      (element) => {
+        revealObserver.observe(
+          element
+        );
+      }
+    );
+  } else {
+    revealElements.forEach(
+      (element) => {
+        element.classList.add(
+          "visible"
+        );
+      }
+    );
+  }
+
+  /* =====================================================
+     NEWSLETTER
+  ===================================================== */
+
+  const newsletterForm =
+    $("#newsletterForm");
+
+  const newsletterEmail =
+    $("#newsletterEmail");
+
+  const newsletterMessage =
+    $(".newsletter-message");
+
+  newsletterForm?.addEventListener(
+    "submit",
+    (event) => {
+      event.preventDefault();
+
+      if (
+        !newsletterEmail?.checkValidity()
+      ) {
+        newsletterEmail?.reportValidity();
         return;
       }
 
-      const target = document.querySelector(href);
+      if (newsletterMessage) {
+        newsletterMessage.textContent =
+          "Thank you for joining the DesiSteps list!";
 
-      if (!target) return;
+        newsletterMessage.classList.add(
+          "show"
+        );
+      }
 
-      event.preventDefault();
+      newsletterForm.reset();
+    }
+  );
 
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
+  /* =====================================================
+     IMAGE FALLBACK
+  ===================================================== */
+
+  $$("img").forEach((image) => {
+    image.addEventListener(
+      "error",
+      () => {
+        image.classList.add(
+          "image-unavailable"
+        );
+
+        image.alt =
+          "Product image unavailable";
+      }
+    );
   });
+
+  /* =====================================================
+     SMOOTH ANCHOR LINKS
+  ===================================================== */
+
+  $$('a[href^="#"]').forEach(
+    (link) => {
+      link.addEventListener(
+        "click",
+        (event) => {
+          const href =
+            link.getAttribute(
+              "href"
+            );
+
+          if (
+            !href ||
+            href === "#"
+          ) {
+            event.preventDefault();
+            return;
+          }
+
+          let target = null;
+
+          try {
+            target =
+              document.querySelector(
+                href
+              );
+          } catch {
+            return;
+          }
+
+          if (!target) return;
+
+          event.preventDefault();
+
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      );
+    }
+  );
+
+  /* =====================================================
+     CLOSE MENU / SEARCH ON RESIZE
+  ===================================================== */
+
+  window.addEventListener(
+    "resize",
+    () => {
+      if (window.innerWidth > 900) {
+        closeMobileMenu();
+      }
+    }
+  );
+
+  /* =====================================================
+     INITIAL PRODUCT STATE
+  ===================================================== */
+
+  updateProducts();
 });
