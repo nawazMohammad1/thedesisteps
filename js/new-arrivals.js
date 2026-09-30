@@ -3,6 +3,7 @@
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+
   /* =======================================================
      ELEMENTS
   ======================================================= */
@@ -32,13 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const wishlistButtons = document.querySelectorAll(".wishlist-product");
 
   const cartToggle = document.querySelector(".cart-toggle");
-
   const cartPanel = document.querySelector(".cart-panel");
-
   const cartBackdrop = document.querySelector(".cart-backdrop");
-
   const closeCart = document.querySelector(".close-cart");
-
   const continueShopping = document.querySelector(".continue-shopping");
 
   const quickAddButtons = document.querySelectorAll(".quick-add");
@@ -46,26 +43,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const newsletterForm = document.querySelector("#newsletterForm");
 
   const toast = document.querySelector("#toast");
-
   const toastTitle = document.querySelector("#toastTitle");
-
   const toastMessage = document.querySelector("#toastMessage");
 
-  const wishlistCountElements = document.querySelectorAll(".wishlist-count");
+  const wishlistCountElements =
+    document.querySelectorAll(".wishlist-count");
 
-  const cartCountElements = document.querySelectorAll(".cart-count");
+  const cartCountElements =
+    document.querySelectorAll(".cart-count");
+
 
   /* =======================================================
      PRELOADER
   ======================================================= */
 
-  window.addEventListener("load", () => {
+  function hidePreloader() {
+    if (!preloader) return;
+
+    preloader.classList.add("hide");
+
     setTimeout(() => {
-      if (preloader) {
-        preloader.classList.add("hide");
-      }
-    }, 900);
+      preloader.style.display = "none";
+    }, 800);
+  }
+
+  window.addEventListener("load", () => {
+    setTimeout(hidePreloader, 900);
   });
+
+  /* Fallback */
+  setTimeout(hidePreloader, 3000);
+
 
   /* =======================================================
      NAVBAR SCROLL
@@ -81,9 +89,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  window.addEventListener("scroll", handleNavbar);
+  window.addEventListener("scroll", handleNavbar, {
+    passive: true
+  });
 
   handleNavbar();
+
 
   /* =======================================================
      MOBILE MENU
@@ -112,37 +123,48 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   menuToggle?.addEventListener("click", () => {
-    const isOpen = mobileMenu.classList.contains("open");
+
+    const isOpen = mobileMenu?.classList.contains("open");
 
     if (isOpen) {
       closeMobileMenu();
     } else {
       openMobileMenu();
     }
+
   });
 
   document.querySelectorAll(".mobile-menu a").forEach((link) => {
+
     link.addEventListener("click", () => {
       closeMobileMenu();
     });
+
   });
 
+
   /* =======================================================
-     SEARCH
+     SEARCH OVERLAY
   ======================================================= */
 
   function openSearch() {
-    searchOverlay?.classList.add("open");
+
+    if (!searchOverlay) return;
+
+    searchOverlay.classList.add("open");
 
     document.body.classList.add("search-open");
 
     setTimeout(() => {
       searchInput?.focus();
-    }, 400);
+    }, 350);
   }
 
   function closeSearchOverlay() {
-    searchOverlay?.classList.remove("open");
+
+    if (!searchOverlay) return;
+
+    searchOverlay.classList.remove("open");
 
     document.body.classList.remove("search-open");
   }
@@ -151,14 +173,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   closeSearch?.addEventListener("click", closeSearchOverlay);
 
+
   /* =======================================================
      SEARCH PRODUCTS
   ======================================================= */
 
   function searchProducts(term) {
+
     const searchTerm = term.trim().toLowerCase();
 
+    /* Empty search */
     if (!searchTerm) {
+
       filterProducts("all");
 
       return;
@@ -167,11 +193,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let found = 0;
 
     productCards.forEach((card) => {
-      const name = card.dataset.name?.toLowerCase() || "";
 
-      const category = card.dataset.category?.toLowerCase() || "";
+      const name =
+        card.dataset.name?.toLowerCase() || "";
 
-      const content = card.textContent.toLowerCase();
+      const category =
+        card.dataset.category?.toLowerCase() || "";
+
+      const content =
+        card.textContent.toLowerCase();
 
       const match =
         name.includes(searchTerm) ||
@@ -179,118 +209,191 @@ document.addEventListener("DOMContentLoaded", () => {
         content.includes(searchTerm);
 
       if (match) {
+
         card.classList.remove("hidden");
 
         found++;
+
       } else {
+
         card.classList.add("hidden");
+
       }
+
     });
 
-    productCount.textContent = String(found).padStart(2, "0");
+    updateProductCount(found);
 
     if (found === 0) {
+
       emptyState?.classList.add("show");
+
     } else {
+
       emptyState?.classList.remove("show");
+
     }
   }
 
+
+  function updateProductCount(count) {
+
+    if (!productCount) return;
+
+    productCount.textContent =
+      String(count).padStart(2, "0");
+  }
+
+
+  function scrollToProducts() {
+
+    document
+      .querySelector("#new-products")
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+  }
+
+
   searchButton?.addEventListener("click", () => {
-    searchProducts(searchInput.value);
+
+    searchProducts(searchInput?.value || "");
 
     closeSearchOverlay();
 
-    document.querySelector("#new-products")?.scrollIntoView({
-      behavior: "smooth",
-    });
+    scrollToProducts();
+
   });
 
+
   searchInput?.addEventListener("keydown", (event) => {
+
     if (event.key === "Enter") {
-      searchProducts(searchInput.value);
+
+      event.preventDefault();
+
+      searchProducts(searchInput?.value || "");
 
       closeSearchOverlay();
 
-      document.querySelector("#new-products")?.scrollIntoView({
-        behavior: "smooth",
-      });
+      scrollToProducts();
+
     }
+
   });
+
 
   /* =======================================================
      SEARCH SUGGESTIONS
   ======================================================= */
 
   document.querySelectorAll("[data-search]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const value = button.dataset.search;
 
-      searchInput.value = value;
+    button.addEventListener("click", () => {
+
+      const value =
+        button.dataset.search || "";
+
+      if (searchInput) {
+        searchInput.value = value;
+      }
 
       searchProducts(value);
 
       closeSearchOverlay();
 
-      document.querySelector("#new-products")?.scrollIntoView({
-        behavior: "smooth",
-      });
+      scrollToProducts();
+
     });
+
   });
+
 
   /* =======================================================
      PRODUCT FILTER
   ======================================================= */
 
-  function filterProducts(filter) {
+  function filterProducts(filter = "all") {
+
     let visible = 0;
 
     productCards.forEach((card) => {
-      const category = card.dataset.category;
 
-      const shouldShow = filter === "all" || category === filter;
+      const category =
+        card.dataset.category || "";
+
+      const shouldShow =
+        filter === "all" ||
+        category === filter;
 
       if (shouldShow) {
+
         card.classList.remove("hidden");
 
         visible++;
+
       } else {
+
         card.classList.add("hidden");
+
       }
+
     });
 
-    productCount.textContent = String(visible).padStart(2, "0");
+    updateProductCount(visible);
 
     if (visible === 0) {
+
       emptyState?.classList.add("show");
+
     } else {
+
       emptyState?.classList.remove("show");
+
     }
   }
 
+
   filterButtons.forEach((button) => {
+
     button.addEventListener("click", () => {
+
       filterButtons.forEach((btn) => {
         btn.classList.remove("active");
       });
 
       button.classList.add("active");
 
-      const filter = button.dataset.filter;
+      const filter =
+        button.dataset.filter || "all";
 
       filterProducts(filter);
+
     });
+
   });
 
+
+  /* =======================================================
+     SHOW ALL PRODUCTS
+  ======================================================= */
+
   showAllButton?.addEventListener("click", () => {
+
     filterButtons.forEach((btn) => {
       btn.classList.remove("active");
     });
 
-    document.querySelector('[data-filter="all"]')?.classList.add("active");
+    document
+      .querySelector('[data-filter="all"]')
+      ?.classList.add("active");
 
     filterProducts("all");
+
   });
+
 
   /* =======================================================
      WISHLIST
@@ -299,103 +402,157 @@ document.addEventListener("DOMContentLoaded", () => {
   let wishlistCount = 0;
 
   wishlistButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const icon = button.querySelector("i");
 
-      const isActive = button.classList.toggle("active");
+    button.addEventListener("click", () => {
+
+      const icon =
+        button.querySelector("i");
+
+      const isActive =
+        button.classList.toggle("active");
 
       if (isActive) {
+
         icon?.classList.remove("fa-regular");
         icon?.classList.add("fa-solid");
 
         wishlistCount++;
 
-        showToast("Added to wishlist", "This pair is now on your wishlist.");
+        showToast(
+          "Added to wishlist",
+          "This pair is now on your wishlist."
+        );
+
       } else {
+
         icon?.classList.remove("fa-solid");
         icon?.classList.add("fa-regular");
 
-        wishlistCount--;
+        wishlistCount =
+          Math.max(0, wishlistCount - 1);
 
         showToast(
           "Removed from wishlist",
-          "The pair was removed from your wishlist.",
+          "The pair was removed from your wishlist."
         );
+
       }
 
       wishlistCountElements.forEach((element) => {
-        element.textContent = wishlistCount;
+
+        element.textContent =
+          wishlistCount;
+
       });
+
     });
+
   });
+
 
   /* =======================================================
      CART
   ======================================================= */
 
   let cartCount = 0;
-
   let cartTotal = 0;
 
+
   function openCart() {
+
     cartPanel?.classList.add("open");
 
     cartBackdrop?.classList.add("show");
 
     document.body.classList.add("cart-open");
+
   }
 
+
   function closeCartPanel() {
+
     cartPanel?.classList.remove("open");
 
     cartBackdrop?.classList.remove("show");
 
     document.body.classList.remove("cart-open");
+
   }
+
 
   cartToggle?.addEventListener("click", openCart);
 
   closeCart?.addEventListener("click", closeCartPanel);
 
-  cartBackdrop?.addEventListener("click", closeCartPanel);
+  cartBackdrop?.addEventListener(
+    "click",
+    closeCartPanel
+  );
 
-  continueShopping?.addEventListener("click", closeCartPanel);
+  continueShopping?.addEventListener(
+    "click",
+    closeCartPanel
+  );
+
 
   /* =======================================================
      QUICK ADD
   ======================================================= */
 
   quickAddButtons.forEach((button) => {
+
     button.addEventListener("click", () => {
-      const productName = button.dataset.product || "Product";
 
-      const card = button.closest(".arrival-card");
+      const productName =
+        button.dataset.product || "Product";
 
-      const priceElement = card?.querySelector(".product-bottom strong");
+      const card =
+        button.closest(".arrival-card");
 
-      let price = priceElement?.textContent.replace(/[₹,]/g, "") || "0";
+      const priceElement =
+        card?.querySelector(".product-bottom strong");
+
+      let price =
+        priceElement?.textContent
+          .replace(/[₹,\s]/g, "") || "0";
 
       price = Number(price);
 
-      cartCount++;
+      if (!Number.isFinite(price)) {
+        price = 0;
+      }
 
+      cartCount++;
       cartTotal += price;
 
       cartCountElements.forEach((element) => {
-        element.textContent = cartCount;
+
+        element.textContent =
+          cartCount;
+
       });
 
-      const totalElement = document.querySelector(".cart-total strong");
+      const totalElement =
+        document.querySelector(".cart-total strong");
 
       if (totalElement) {
-        totalElement.textContent = `₹${cartTotal.toLocaleString("en-IN")}`;
+
+        totalElement.textContent =
+          `₹${cartTotal.toLocaleString("en-IN")}`;
+
       }
 
-      showToast("Added to bag", `${productName} has been added.`);
+      showToast(
+        "Added to bag",
+        `${productName} has been added to your bag.`
+      );
 
       openCart();
+
     });
+
   });
+
 
   /* =======================================================
      TOAST
@@ -404,173 +561,223 @@ document.addEventListener("DOMContentLoaded", () => {
   let toastTimer;
 
   function showToast(title, message) {
+
     if (!toast) return;
 
     clearTimeout(toastTimer);
 
-    toastTitle.textContent = title;
+    if (toastTitle) {
+      toastTitle.textContent = title;
+    }
 
-    toastMessage.textContent = message;
+    if (toastMessage) {
+      toastMessage.textContent = message;
+    }
 
     toast.classList.add("show");
 
     toastTimer = setTimeout(() => {
+
       toast.classList.remove("show");
+
     }, 3000);
+
   }
+
 
   /* =======================================================
      NEWSLETTER
   ======================================================= */
 
   newsletterForm?.addEventListener("submit", (event) => {
+
     event.preventDefault();
 
-    const email = document.querySelector("#newsletterEmail")?.value.trim();
+    const emailInput =
+      document.querySelector("#newsletterEmail");
 
-    if (!email) return;
+    const email =
+      emailInput?.value.trim() || "";
+
+    if (!email) {
+
+      showToast(
+        "Enter your email",
+        "Please enter a valid email address."
+      );
+
+      emailInput?.focus();
+
+      return;
+    }
+
 
     showToast(
       "You're on the list!",
-      "Watch your inbox for new DesiSteps drops.",
+      "Watch your inbox for new DESISTEPS drops."
     );
 
+
     newsletterForm.reset();
+
   });
+
 
   /* =======================================================
      SCROLL REVEAL
   ======================================================= */
 
-  const revealElements = document.querySelectorAll(".reveal");
+  const revealElements =
+    document.querySelectorAll(".reveal");
 
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
 
-          revealObserver.unobserve(entry.target);
+  if ("IntersectionObserver" in window) {
+
+    const revealObserver =
+      new IntersectionObserver(
+        (entries, observer) => {
+
+          entries.forEach((entry) => {
+
+            if (entry.isIntersecting) {
+
+              /*
+                IMPORTANT:
+                Collection / New Arrivals CSS
+                uses .reveal.active
+              */
+
+              entry.target.classList.add("active");
+
+              observer.unobserve(entry.target);
+
+            }
+
+          });
+
+        },
+        {
+          threshold: 0.12,
+          rootMargin: "0px 0px -40px 0px"
         }
-      });
-    },
-    {
-      threshold: 0.12,
-    },
-  );
+      );
 
-  revealElements.forEach((element) => {
-    revealObserver.observe(element);
-  });
 
-  /* =======================================================
-     CUSTOM CURSOR
-  ======================================================= */
+    revealElements.forEach((element) => {
 
-  const cursor = document.querySelector(".cursor");
+      revealObserver.observe(element);
 
-  const cursorFollower = document.querySelector(".cursor-follower");
-
-  if (
-    cursor &&
-    cursorFollower &&
-    window.matchMedia("(hover: hover) and (pointer: fine)").matches
-  ) {
-    let mouseX = 0;
-    let mouseY = 0;
-
-    let followerX = 0;
-    let followerY = 0;
-
-    document.addEventListener("mousemove", (event) => {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-
-      cursor.style.left = `${mouseX}px`;
-
-      cursor.style.top = `${mouseY}px`;
     });
 
-    function animateCursor() {
-      followerX += (mouseX - followerX) * 0.12;
+  } else {
 
-      followerY += (mouseY - followerY) * 0.12;
+    /* Fallback for older browsers */
 
-      cursorFollower.style.left = `${followerX}px`;
+    revealElements.forEach((element) => {
 
-      cursorFollower.style.top = `${followerY}px`;
+      element.classList.add("active");
 
-      requestAnimationFrame(animateCursor);
-    }
+    });
 
-    animateCursor();
-
-    document
-      .querySelectorAll("a, button, input, .arrival-image")
-      .forEach((element) => {
-        element.addEventListener("mouseenter", () => {
-          cursorFollower.style.width = "55px";
-
-          cursorFollower.style.height = "55px";
-        });
-
-        element.addEventListener("mouseleave", () => {
-          cursorFollower.style.width = "34px";
-
-          cursorFollower.style.height = "34px";
-        });
-      });
   }
 
+
   /* =======================================================
-     PARALLAX HERO
+     HERO PARALLAX
   ======================================================= */
 
-  const heroImage = document.querySelector(".hero-image-card");
+  const heroImage =
+    document.querySelector(".hero-image-card");
+
+
+  function updateHeroParallax() {
+
+    if (!heroImage) return;
+
+    if (window.innerWidth < 900) {
+
+      heroImage.style.transform = "";
+
+      return;
+
+    }
+
+    const scroll =
+      window.scrollY;
+
+    const movement =
+      Math.min(scroll * 0.05, 40);
+
+    heroImage.style.transform =
+      `rotate(3deg) translateY(${movement}px)`;
+
+  }
+
 
   window.addEventListener(
     "scroll",
-    () => {
-      if (!heroImage || window.innerWidth < 900) {
-        return;
-      }
-
-      const scroll = window.scrollY;
-
-      heroImage.style.transform = `rotate(3deg) translateY(${scroll * 0.05}px)`;
-    },
+    updateHeroParallax,
     {
-      passive: true,
-    },
+      passive: true
+    }
   );
+
 
   /* =======================================================
      ESCAPE KEY
   ======================================================= */
 
   document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") {
-      return;
-    }
+
+    if (event.key !== "Escape") return;
 
     closeMobileMenu();
+
     closeSearchOverlay();
+
     closeCartPanel();
+
   });
+
 
   /* =======================================================
-     PREVENT BROKEN # LINKS FROM JUMPING
+     PREVENT BROKEN # LINKS
   ======================================================= */
 
-  document.querySelectorAll('a[href="#"]').forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
+  document
+    .querySelectorAll('a[href="#"]')
+    .forEach((link) => {
+
+      link.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+      });
+
     });
+
+
+  /* =======================================================
+     CLOSE MOBILE MENU ON RESIZE
+  ======================================================= */
+
+  window.addEventListener("resize", () => {
+
+    if (window.innerWidth > 900) {
+
+      closeMobileMenu();
+
+    }
+
+    updateHeroParallax();
+
   });
+
 
   /* =======================================================
      INITIAL PRODUCT COUNT
   ======================================================= */
 
   filterProducts("all");
+
 });
