@@ -30,7 +30,6 @@
   --border: rgba(50, 27, 18, 0.14);
 
   --shadow: 0 20px 60px rgba(50, 27, 18, 0.12);
-
   --shadow-heavy: 0 30px 80px rgba(50, 27, 18, 0.18);
 
   --transition: 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -52,13 +51,9 @@ html {
 
 body {
   font-family: "DM Sans", sans-serif;
-
   color: var(--text);
-
   background: var(--cream);
-
   overflow-x: hidden;
-
   line-height: 1.6;
 }
 
@@ -94,26 +89,47 @@ img {
 }
 
 /* =========================================================
+   NORMAL BROWSER CURSOR
+========================================================= */
+
+html,
+body {
+  cursor: auto;
+}
+
+a,
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  cursor: text;
+}
+
+/* Hide any old custom cursor elements */
+.cursor-dot,
+.cursor-ring {
+  display: none !important;
+}
+
+/* =========================================================
    LOADER
 ========================================================= */
 
 .page-loader {
   position: fixed;
-
   inset: 0;
-
   z-index: 9999;
 
   background: var(--brown);
-
   color: var(--cream);
 
   display: flex;
-
   flex-direction: column;
-
   justify-content: center;
-
   align-items: center;
 
   gap: 8px;
@@ -125,27 +141,22 @@ img {
 
 .page-loader.hide {
   opacity: 0;
-
   visibility: hidden;
 }
 
 .loader-symbol {
   width: 70px;
-
   height: 70px;
 
   border: 1px solid var(--gold);
-
   border-radius: 50%;
 
   display: grid;
-
   place-items: center;
 
   color: var(--gold-light);
 
   font-family: "Cormorant Garamond", serif;
-
   font-size: 38px;
 
   animation: loaderSpin 2s linear infinite;
@@ -153,21 +164,15 @@ img {
 
 .page-loader > span {
   font-family: "Cormorant Garamond", serif;
-
   font-size: 25px;
-
   font-weight: 700;
-
   letter-spacing: 5px;
 }
 
 .page-loader small {
   color: var(--gold-light);
-
   letter-spacing: 3px;
-
   text-transform: uppercase;
-
   font-size: 9px;
 }
 
@@ -182,67 +187,17 @@ img {
 }
 
 /* =========================================================
-   CUSTOM CURSOR
-========================================================= */
-
-.cursor-dot,
-.cursor-ring {
-  position: fixed;
-
-  top: 0;
-  left: 0;
-
-  pointer-events: none;
-
-  z-index: 10000;
-
-  transform: translate(-50%, -50%);
-}
-
-.cursor-dot {
-  width: 6px;
-  height: 6px;
-
-  border-radius: 50%;
-
-  background: var(--maroon);
-}
-
-.cursor-ring {
-  width: 35px;
-  height: 35px;
-
-  border: 1px solid var(--maroon);
-
-  border-radius: 50%;
-
-  transition:
-    width 0.2s ease,
-    height 0.2s ease;
-}
-
-.cursor-ring.active {
-  width: 55px;
-  height: 55px;
-
-  border-color: var(--gold);
-}
-
-/* =========================================================
    BACKGROUND DECORATION
 ========================================================= */
 
 .bg-decoration {
   position: fixed;
-
   pointer-events: none;
-
   z-index: -1;
 
   border-radius: 50%;
 
   filter: blur(1px);
-
   opacity: 0.35;
 }
 
@@ -263,7 +218,12 @@ img {
   left: -150px;
   bottom: 15%;
 
-  background: radial-gradient(circle, rgba(125, 31, 37, 0.12), transparent 70%);
+  background:
+    radial-gradient(
+      circle,
+      rgba(125, 31, 37, 0.12),
+      transparent 70%
+    );
 }
 
 /* =========================================================
@@ -291,7 +251,8 @@ img {
 
   backdrop-filter: blur(18px);
 
-  box-shadow: 0 10px 35px rgba(50, 27, 18, 0.08);
+  box-shadow:
+    0 10px 35px rgba(50, 27, 18, 0.08);
 }
 
 .navbar {
@@ -312,9 +273,7 @@ img {
 
 .brand {
   display: flex;
-
   align-items: center;
-
   gap: 12px;
 }
 
@@ -326,11 +285,9 @@ img {
   place-items: center;
 
   border: 1px solid var(--gold);
-
   border-radius: 50%;
 
   font-family: "Cormorant Garamond", serif;
-
   font-size: 27px;
 
   color: var(--maroon);
@@ -340,15 +297,12 @@ img {
 
 .brand:hover .brand-symbol {
   background: var(--maroon);
-
   color: var(--cream);
-
   transform: rotate(12deg);
 }
 
 .brand-text {
   display: flex;
-
   flex-direction: column;
 }
 
@@ -356,7 +310,6 @@ img {
   font-family: "Cormorant Garamond", serif;
 
   font-size: 23px;
-
   line-height: 1;
 
   letter-spacing: 3px;
@@ -368,7 +321,6 @@ img {
   margin-top: 4px;
 
   font-size: 8px;
-
   letter-spacing: 2px;
 
   color: var(--muted);
@@ -380,9 +332,7 @@ img {
 
 .nav-links {
   display: flex;
-
   align-items: center;
-
   gap: 34px;
 }
 
@@ -390,7 +340,6 @@ img {
   position: relative;
 
   font-size: 13px;
-
   font-weight: 600;
 
   color: var(--brown-light);
@@ -404,11 +353,9 @@ img {
   position: absolute;
 
   width: 0;
-
   height: 2px;
 
   left: 0;
-
   bottom: -7px;
 
   background: var(--maroon);
@@ -430,21 +377,16 @@ img {
 
 .nav-actions {
   display: flex;
-
   align-items: center;
-
   gap: 18px;
 }
 
 .nav-shop {
   display: flex;
-
   align-items: center;
-
   gap: 8px;
 
   background: var(--brown);
-
   color: var(--cream);
 
   padding: 12px 17px;
@@ -456,7 +398,6 @@ img {
 
 .nav-shop:hover {
   background: var(--maroon);
-
   transform: translateY(-2px);
 }
 
@@ -475,9 +416,7 @@ img {
   background: transparent;
 
   flex-direction: column;
-
   justify-content: center;
-
   align-items: center;
 
   gap: 5px;
@@ -485,7 +424,6 @@ img {
 
 .menu-toggle span {
   width: 23px;
-
   height: 2px;
 
   background: var(--brown);
@@ -512,7 +450,10 @@ img {
 .contact-hero {
   min-height: 850px;
 
-  padding: 150px max(4vw, 40px) 90px;
+  padding:
+    150px
+    max(4vw, 40px)
+    90px;
 
   display: grid;
 
@@ -541,29 +482,33 @@ img {
 
 .hero-pattern {
   position: absolute;
-
   inset: 0;
 
   opacity: 0.16;
 
-  background-image: linear-gradient(
-    45deg,
-    transparent 48%,
-    var(--gold) 49%,
-    var(--gold) 51%,
-    transparent 52%
-  );
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 48%,
+      var(--gold) 49%,
+      var(--gold) 51%,
+      transparent 52%
+    );
 
   background-size: 70px 70px;
 
-  mask-image: linear-gradient(to right, black, transparent 70%);
+  mask-image:
+    linear-gradient(
+      to right,
+      black,
+      transparent 70%
+    );
 }
 
 /* Hero content */
 
 .hero-content {
   position: relative;
-
   z-index: 2;
 
   max-width: 700px;
@@ -573,13 +518,11 @@ img {
   display: inline-flex;
 
   align-items: center;
-
   gap: 9px;
 
   color: var(--maroon);
 
   font-size: 10px;
-
   font-weight: 700;
 
   letter-spacing: 3px;
@@ -589,7 +532,6 @@ img {
 
 .eyebrow i {
   font-size: 5px;
-
   color: var(--gold);
 }
 
@@ -650,13 +592,11 @@ img {
   display: inline-flex;
 
   align-items: center;
-
   justify-content: center;
 
   gap: 12px;
 
   font-size: 11px;
-
   font-weight: 700;
 
   letter-spacing: 1.5px;
@@ -668,7 +608,6 @@ img {
 
 .primary-btn {
   background: var(--brown);
-
   color: var(--cream);
 }
 
@@ -677,7 +616,8 @@ img {
 
   transform: translateY(-4px);
 
-  box-shadow: 0 15px 30px rgba(125, 31, 37, 0.18);
+  box-shadow:
+    0 15px 30px rgba(125, 31, 37, 0.18);
 }
 
 .secondary-btn {
@@ -690,13 +630,11 @@ img {
 
 .secondary-btn:hover {
   border-color: var(--gold);
-
   transform: translateY(-4px);
 }
 
 .secondary-btn i {
   color: #25d366;
-
   font-size: 18px;
 }
 
@@ -730,7 +668,8 @@ img {
 
   object-fit: cover;
 
-  transition: transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition:
+    transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .hero-image-wrap:hover .hero-image img {
@@ -755,7 +694,6 @@ img {
   z-index: 3;
 
   bottom: 35px;
-
   left: -40px;
 
   width: 125px;
@@ -764,22 +702,21 @@ img {
   border-radius: 50%;
 
   background: var(--maroon);
-
   color: var(--cream);
 
   display: flex;
 
   flex-direction: column;
-
   justify-content: center;
-
   align-items: center;
 
   text-align: center;
 
-  box-shadow: 0 15px 35px rgba(125, 31, 37, 0.25);
+  box-shadow:
+    0 15px 35px rgba(125, 31, 37, 0.25);
 
-  animation: floatingStamp 4s ease-in-out infinite;
+  animation:
+    floatingStamp 4s ease-in-out infinite;
 }
 
 .hero-stamp span {
@@ -815,7 +752,6 @@ img {
   position: absolute;
 
   bottom: 25px;
-
   left: 50%;
 
   transform: translateX(-50%);
@@ -823,7 +759,6 @@ img {
   display: flex;
 
   flex-direction: column;
-
   align-items: center;
 
   gap: 8px;
@@ -838,7 +773,8 @@ img {
 .hero-scroll i {
   color: var(--maroon);
 
-  animation: scrollArrow 1.5s ease-in-out infinite;
+  animation:
+    scrollArrow 1.5s ease-in-out infinite;
 }
 
 @keyframes scrollArrow {
@@ -862,7 +798,6 @@ img {
 
 .section-heading {
   max-width: 600px;
-
   margin-bottom: 60px;
 }
 
@@ -889,7 +824,6 @@ img {
 
 .section-heading h2 span {
   color: var(--maroon);
-
   font-style: italic;
 }
 
@@ -921,7 +855,8 @@ img {
 
   display: grid;
 
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns:
+    repeat(3, 1fr);
 
   gap: 22px;
 }
@@ -967,7 +902,8 @@ img {
 
   box-shadow: var(--shadow);
 
-  border-color: rgba(201, 155, 85, 0.45);
+  border-color:
+    rgba(201, 155, 85, 0.45);
 }
 
 .contact-card:hover::before {
@@ -1081,7 +1017,12 @@ img {
 ========================================================= */
 
 .form-section {
-  background: linear-gradient(120deg, var(--brown), #402219);
+  background:
+    linear-gradient(
+      120deg,
+      var(--brown),
+      #402219
+    );
 
   color: var(--cream);
 
@@ -1306,7 +1247,8 @@ img {
 .form-row {
   display: grid;
 
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns:
+    repeat(2, 1fr);
 
   gap: 20px;
 }
@@ -1384,7 +1326,6 @@ img {
 
 .input-wrap select {
   appearance: none;
-
   cursor: pointer;
 }
 
@@ -1408,7 +1349,8 @@ img {
 
   background: var(--white);
 
-  box-shadow: 0 0 0 4px rgba(201, 155, 85, 0.08);
+  box-shadow:
+    0 0 0 4px rgba(201, 155, 85, 0.08);
 }
 
 .input-group.invalid input,
@@ -1516,7 +1458,6 @@ img {
   display: flex;
 
   justify-content: center;
-
   align-items: center;
 
   gap: 14px;
@@ -1535,17 +1476,18 @@ img {
 
   transform: translateY(-3px);
 
-  box-shadow: 0 15px 30px rgba(84, 19, 25, 0.18);
+  box-shadow:
+    0 15px 30px rgba(84, 19, 25, 0.18);
 }
 
 .submit-btn.loading {
   pointer-events: none;
-
   opacity: 0.75;
 }
 
 .submit-btn.loading i {
-  animation: sending 0.8s linear infinite;
+  animation:
+    sending 0.8s linear infinite;
 }
 
 @keyframes sending {
@@ -1609,13 +1551,14 @@ img {
 
   inset: 0;
 
-  background: repeating-radial-gradient(
-    circle at 100% 0,
-    transparent 0,
-    transparent 22px,
-    rgba(224, 189, 125, 0.08) 23px,
-    transparent 24px
-  );
+  background:
+    repeating-radial-gradient(
+      circle at 100% 0,
+      transparent 0,
+      transparent 22px,
+      rgba(224, 189, 125, 0.08) 23px,
+      transparent 24px
+    );
 }
 
 .whatsapp-icon {
@@ -1636,10 +1579,10 @@ img {
   font-size: 44px;
 
   position: relative;
-
   z-index: 1;
 
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
 .whatsapp-content {
@@ -1666,7 +1609,6 @@ img {
 
 .whatsapp-content h2 span {
   color: var(--gold-light);
-
   font-style: italic;
 }
 
@@ -1682,23 +1624,19 @@ img {
 
 .whatsapp-btn {
   position: relative;
-
   z-index: 1;
 
   min-width: 190px;
-
   height: 54px;
 
   display: inline-flex;
 
   justify-content: center;
-
   align-items: center;
 
   gap: 12px;
 
   background: var(--cream);
-
   color: var(--maroon);
 
   font-size: 10px;
@@ -1756,7 +1694,6 @@ img {
   display: flex;
 
   justify-content: space-between;
-
   align-items: center;
 
   text-align: left;
@@ -1909,7 +1846,10 @@ img {
 
   color: var(--cream);
 
-  padding: 75px max(5vw, 30px) 25px;
+  padding:
+    75px
+    max(5vw, 30px)
+    25px;
 }
 
 .footer-top {
@@ -2028,7 +1968,8 @@ img {
 
   padding-top: 20px;
 
-  border-top: 1px solid rgba(247, 240, 229, 0.1);
+  border-top:
+    1px solid rgba(247, 240, 229, 0.1);
 
   display: flex;
 
@@ -2069,7 +2010,8 @@ img {
 
   border-radius: 30px;
 
-  box-shadow: 0 10px 30px rgba(37, 211, 102, 0.25);
+  box-shadow:
+    0 10px 30px rgba(37, 211, 102, 0.25);
 
   font-size: 11px;
 
@@ -2083,7 +2025,9 @@ img {
 }
 
 .floating-whatsapp:hover {
-  transform: translateY(-5px) scale(1.03);
+  transform:
+    translateY(-5px)
+    scale(1.03);
 }
 
 /* =========================================================
@@ -2148,7 +2092,8 @@ img {
   }
 
   .contact-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .contact-card:last-child {
@@ -2208,7 +2153,8 @@ img {
 
     padding: 50px 30px;
 
-    background: rgba(247, 240, 229, 0.98);
+    background:
+      rgba(247, 240, 229, 0.98);
 
     backdrop-filter: blur(15px);
 
@@ -2217,14 +2163,15 @@ img {
     flex-direction: column;
 
     align-items: center;
-
     justify-content: center;
 
     gap: 28px;
 
     transform: translateX(100%);
 
-    transition: transform 0.45s cubic-bezier(0.77, 0, 0.18, 1);
+    transition:
+      transform 0.45s
+      cubic-bezier(0.77, 0, 0.18, 1);
   }
 
   .nav-links.active {
@@ -2240,7 +2187,10 @@ img {
   .contact-hero {
     grid-template-columns: 1fr;
 
-    padding: 130px 25px 80px;
+    padding:
+      130px
+      25px
+      80px;
 
     text-align: center;
   }
@@ -2299,7 +2249,8 @@ img {
   }
 
   .footer-top {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .footer-brand {
@@ -2336,7 +2287,8 @@ img {
   }
 
   .hero-content h1 {
-    font-size: clamp(54px, 15vw, 75px);
+    font-size:
+      clamp(54px, 15vw, 75px);
 
     letter-spacing: -2px;
   }
@@ -2395,7 +2347,8 @@ img {
   }
 
   .footer-top {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+      1fr 1fr;
 
     gap: 35px 20px;
   }
@@ -2442,7 +2395,11 @@ img {
   }
 
   .hero-image-border {
-    inset: -10px 10px 10px -10px;
+    inset:
+      -10px
+      10px
+      10px
+      -10px;
   }
 
   .hero-stamp {
@@ -2492,17 +2449,16 @@ img {
 ========================================================= */
 
 @media (hover: none) {
-  .cursor-dot,
-  .cursor-ring {
-    display: none;
-  }
-
   .contact-card:hover {
     transform: none;
   }
 
   .primary-btn:hover,
   .secondary-btn:hover {
+    transform: none;
+  }
+
+  .hero-image-wrap:hover .hero-image img {
     transform: none;
   }
 }
