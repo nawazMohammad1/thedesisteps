@@ -1,7 +1,10 @@
 /* =========================================================
    DESISTEPS — NEW ARRIVALS
    ========================================================= */
-
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
 :root {
   --cream: #f7f0e5;
   --cream-dark: #eadfce;
