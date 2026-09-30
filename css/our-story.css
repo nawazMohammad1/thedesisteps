@@ -1,7 +1,27 @@
 /* =========================================================
    DESISTEPS — OUR STORY
    ========================================================= */
+html,
+body {
+  cursor: auto;
+}
 
+a,
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  cursor: text;
+}
+
+.cursor,
+.cursor-follower {
+  display: none !important;
+}
 :root {
   --cream: #f7f0e5;
   --cream-dark: #eadfce;
