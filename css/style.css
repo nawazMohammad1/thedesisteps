@@ -3297,6 +3297,41 @@ a {
 }
 
 /* =========================================================
+   NORMAL BROWSER CURSOR
+   ========================================================= */
+
+html,
+body {
+  cursor: default !important;
+}
+
+/* Disable any custom cursor/follower elements */
+.cursor-dot,
+.cursor-ring,
+.custom-cursor,
+.cursor-follower {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+a,
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+select {
+  cursor: pointer !important;
+}
+
+input,
+textarea {
+  cursor: text !important;
+}
+
+/* =========================================================
    REDUCED MOTION
    ========================================================= */
 
