@@ -5,25 +5,40 @@
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+
   /* =======================================================
      PAGE LOADER
   ======================================================= */
 
   const pageLoader = document.getElementById("pageLoader");
 
-  window.addEventListener("load", () => {
+  function hidePageLoader() {
+    if (!pageLoader) return;
+
+    pageLoader.classList.add("hide");
+
     setTimeout(() => {
-      pageLoader?.classList.add("hide");
-    }, 600);
+      pageLoader.style.display = "none";
+    }, 700);
+  }
+
+  window.addEventListener("load", () => {
+    setTimeout(hidePageLoader, 600);
   });
+
+  /* Fallback in case the load event is delayed */
+  setTimeout(hidePageLoader, 3000);
+
 
   /* =======================================================
      NAVBAR SCROLL
   ======================================================= */
 
-  const siteHeader = document.getElementById("siteHeader");
+  const siteHeader =
+    document.getElementById("siteHeader");
 
-  const updateHeader = () => {
+  function updateHeader() {
+
     if (!siteHeader) return;
 
     if (window.scrollY > 50) {
@@ -31,349 +46,702 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       siteHeader.classList.remove("scrolled");
     }
-  };
+  }
 
-  window.addEventListener("scroll", updateHeader, { passive: true });
+  window.addEventListener(
+    "scroll",
+    updateHeader,
+    { passive: true }
+  );
 
   updateHeader();
+
 
   /* =======================================================
      MOBILE MENU
   ======================================================= */
 
-  const menuToggle = document.getElementById("menuToggle");
+  const menuToggle =
+    document.getElementById("menuToggle");
 
-  const navLinks = document.getElementById("navLinks");
+  const navLinks =
+    document.getElementById("navLinks");
 
-  if (menuToggle && navLinks) {
-    menuToggle.addEventListener("click", () => {
-      const isOpen = menuToggle.classList.toggle("active");
 
-      navLinks.classList.toggle("active", isOpen);
+  function openMenu() {
 
-      document.body.classList.toggle("menu-open", isOpen);
+    if (!menuToggle || !navLinks) return;
 
-      menuToggle.setAttribute("aria-expanded", String(isOpen));
-    });
+    menuToggle.classList.add("active");
 
-    /* Close menu after clicking link */
+    navLinks.classList.add("active");
 
-    navLinks.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        menuToggle.classList.remove("active");
+    document.body.classList.add("menu-open");
 
-        navLinks.classList.remove("active");
-
-        document.body.classList.remove("menu-open");
-
-        menuToggle.setAttribute("aria-expanded", "false");
-      });
-    });
+    menuToggle.setAttribute(
+      "aria-expanded",
+      "true"
+    );
   }
 
+
+  function closeMenu() {
+
+    if (!menuToggle || !navLinks) return;
+
+    menuToggle.classList.remove("active");
+
+    navLinks.classList.remove("active");
+
+    document.body.classList.remove("menu-open");
+
+    menuToggle.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+  }
+
+
+  menuToggle?.addEventListener("click", () => {
+
+    const isOpen =
+      navLinks?.classList.contains("active");
+
+    if (isOpen) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+
+  });
+
+
+  navLinks?.querySelectorAll("a").forEach((link) => {
+
+    link.addEventListener("click", () => {
+      closeMenu();
+    });
+
+  });
+
+
   /* =======================================================
-     ESCAPE CLOSES MENU
+     ESCAPE KEY
   ======================================================= */
 
   document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") return;
 
-    if (menuToggle && navLinks) {
-      menuToggle.classList.remove("active");
-
-      navLinks.classList.remove("active");
-
-      document.body.classList.remove("menu-open");
-
-      menuToggle.setAttribute("aria-expanded", "false");
+    if (event.key === "Escape") {
+      closeMenu();
     }
+
   });
+
 
   /* =======================================================
      SCROLL REVEAL
   ======================================================= */
 
-  const revealElements = document.querySelectorAll(".reveal");
+  const revealElements =
+    document.querySelectorAll(".reveal");
+
 
   if ("IntersectionObserver" in window) {
-    const revealObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
 
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.12,
-        rootMargin: "0px 0px -40px 0px",
-      },
-    );
+    const revealObserver =
+      new IntersectionObserver(
+        (entries, observer) => {
+
+          entries.forEach((entry) => {
+
+            if (!entry.isIntersecting) return;
+
+            /*
+              IMPORTANT:
+              Contact CSS uses .reveal.active
+            */
+
+            entry.target.classList.add("active");
+
+            observer.unobserve(entry.target);
+
+          });
+
+        },
+        {
+          threshold: 0.12,
+          rootMargin: "0px 0px -40px 0px"
+        }
+      );
+
 
     revealElements.forEach((element) => {
       revealObserver.observe(element);
     });
+
   } else {
+
     revealElements.forEach((element) => {
-      element.classList.add("visible");
+      element.classList.add("active");
     });
+
   }
+
 
   /* =======================================================
      FAQ ACCORDION
   ======================================================= */
 
-  const faqItems = document.querySelectorAll(".faq-item");
+  const faqItems =
+    document.querySelectorAll(".faq-item");
+
 
   faqItems.forEach((item) => {
-    const question = item.querySelector(".faq-question");
 
-    const answer = item.querySelector(".faq-answer");
+    const question =
+      item.querySelector(".faq-question");
+
+    const answer =
+      item.querySelector(".faq-answer");
+
 
     if (!question || !answer) return;
 
-    question.addEventListener("click", () => {
-      const isOpen = item.classList.contains("open");
 
-      /* Close all */
+    question.addEventListener("click", () => {
+
+      const isOpen =
+        item.classList.contains("open");
+
+
+      /* Close all other FAQ items */
 
       faqItems.forEach((otherItem) => {
-        if (otherItem !== item) {
-          otherItem.classList.remove("open");
 
-          const otherQuestion = otherItem.querySelector(".faq-question");
+        if (otherItem === item) return;
 
-          const otherAnswer = otherItem.querySelector(".faq-answer");
+        otherItem.classList.remove("open");
 
-          otherQuestion?.setAttribute("aria-expanded", "false");
+        const otherQuestion =
+          otherItem.querySelector(".faq-question");
 
-          if (otherAnswer) {
-            otherAnswer.style.maxHeight = null;
-          }
+        const otherAnswer =
+          otherItem.querySelector(".faq-answer");
+
+
+        otherQuestion?.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+
+        if (otherAnswer) {
+          otherAnswer.style.maxHeight = null;
         }
+
       });
 
-      /* Toggle current */
+
+      /* Open current item */
 
       if (!isOpen) {
+
         item.classList.add("open");
 
-        question.setAttribute("aria-expanded", "true");
+        question.setAttribute(
+          "aria-expanded",
+          "true"
+        );
 
-        answer.style.maxHeight = answer.scrollHeight + "px";
+        answer.style.maxHeight =
+          `${answer.scrollHeight}px`;
+
       } else {
+
         item.classList.remove("open");
 
-        question.setAttribute("aria-expanded", "false");
+        question.setAttribute(
+          "aria-expanded",
+          "false"
+        );
 
         answer.style.maxHeight = null;
+
       }
+
     });
+
   });
+
 
   /* =======================================================
      CHARACTER COUNTER
   ======================================================= */
 
-  const message = document.getElementById("message");
+  const message =
+    document.getElementById("message");
 
-  const characterCount = document.querySelector(".character-count");
+  const characterCount =
+    document.querySelector(".character-count");
+
+
+  function updateCharacterCount() {
+
+    if (!message || !characterCount) return;
+
+    const length =
+      message.value.length;
+
+    characterCount.textContent =
+      `${length} / 500`;
+  }
+
 
   if (message && characterCount) {
-    const updateCharacterCount = () => {
-      const length = message.value.length;
 
-      characterCount.textContent = `${length} / 500`;
-    };
-
-    message.addEventListener("input", updateCharacterCount);
+    message.addEventListener(
+      "input",
+      updateCharacterCount
+    );
 
     updateCharacterCount();
+
   }
+
 
   /* =======================================================
      FORM VALIDATION
   ======================================================= */
 
-  const contactForm = document.getElementById("contactFormElement");
+  const contactForm =
+    document.getElementById("contactFormElement");
 
-  const formStatus = document.getElementById("formStatus");
+  const formStatus =
+    document.getElementById("formStatus");
+
 
   if (contactForm) {
+
     const showError = (input, messageText) => {
-      const group = input.closest(".input-group");
+
+      if (!input) return;
+
+      const group =
+        input.closest(".input-group");
 
       if (!group) return;
 
       group.classList.add("invalid");
 
-      const error = group.querySelector(".error-message");
+      const error =
+        group.querySelector(".error-message");
 
       if (error) {
         error.textContent = messageText;
       }
     };
 
+
     const clearError = (input) => {
-      const group = input.closest(".input-group");
+
+      if (!input) return;
+
+      const group =
+        input.closest(".input-group");
 
       if (!group) return;
 
       group.classList.remove("invalid");
 
-      const error = group.querySelector(".error-message");
+      const error =
+        group.querySelector(".error-message");
 
       if (error) {
         error.textContent = "";
       }
     };
 
+
     const validateEmail = (email) => {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(email);
+
     };
+
 
     const validateForm = () => {
+
       let valid = true;
 
-      const name = document.getElementById("name");
 
-      const email = document.getElementById("email");
+      const name =
+        document.getElementById("name");
 
-      const subject = document.getElementById("subject");
+      const email =
+        document.getElementById("email");
 
-      const messageField = document.getElementById("message");
+      const subject =
+        document.getElementById("subject");
 
-      const consent = document.getElementById("consent");
+      const messageField =
+        document.getElementById("message");
 
-      /* Name */
+      const consent =
+        document.getElementById("consent");
 
-      if (!name.value.trim()) {
-        showError(name, "Please enter your name.");
+
+      /* -----------------------------------------------
+         NAME
+      ----------------------------------------------- */
+
+      if (!name) {
+        valid = false;
+      } else if (!name.value.trim()) {
+
+        showError(
+          name,
+          "Please enter your name."
+        );
 
         valid = false;
+
       } else {
+
         clearError(name);
+
       }
 
-      /* Email */
 
-      if (!email.value.trim()) {
-        showError(email, "Please enter your email.");
+      /* -----------------------------------------------
+         EMAIL
+      ----------------------------------------------- */
 
-        valid = false;
-      } else if (!validateEmail(email.value.trim())) {
-        showError(email, "Please enter a valid email.");
+      if (!email) {
 
         valid = false;
+
+      } else if (!email.value.trim()) {
+
+        showError(
+          email,
+          "Please enter your email."
+        );
+
+        valid = false;
+
+      } else if (
+        !validateEmail(email.value.trim())
+      ) {
+
+        showError(
+          email,
+          "Please enter a valid email."
+        );
+
+        valid = false;
+
       } else {
+
         clearError(email);
+
       }
 
-      /* Subject */
 
-      if (!subject.value) {
-        showError(subject, "Please select a subject.");
+      /* -----------------------------------------------
+         SUBJECT
+      ----------------------------------------------- */
+
+      if (!subject) {
 
         valid = false;
+
+      } else if (!subject.value) {
+
+        showError(
+          subject,
+          "Please select a subject."
+        );
+
+        valid = false;
+
       } else {
+
         clearError(subject);
+
       }
 
-      /* Message */
 
-      if (!messageField.value.trim()) {
-        showError(messageField, "Please enter your message.");
+      /* -----------------------------------------------
+         MESSAGE
+      ----------------------------------------------- */
 
-        valid = false;
-      } else if (messageField.value.trim().length < 10) {
-        showError(messageField, "Message should be at least 10 characters.");
+      if (!messageField) {
 
         valid = false;
+
+      } else if (!messageField.value.trim()) {
+
+        showError(
+          messageField,
+          "Please enter your message."
+        );
+
+        valid = false;
+
+      } else if (
+        messageField.value.trim().length < 10
+      ) {
+
+        showError(
+          messageField,
+          "Message should be at least 10 characters."
+        );
+
+        valid = false;
+
+      } else if (
+        messageField.value.length > 500
+      ) {
+
+        showError(
+          messageField,
+          "Message cannot exceed 500 characters."
+        );
+
+        valid = false;
+
       } else {
+
         clearError(messageField);
+
       }
 
-      /* Consent */
 
-      if (!consent.checked) {
-        consent.closest(".checkbox-wrap")?.classList.add("consent-error");
+      /* -----------------------------------------------
+         CONSENT
+      ----------------------------------------------- */
 
-        valid = false;
-      } else {
-        consent.closest(".checkbox-wrap")?.classList.remove("consent-error");
+      if (consent) {
+
+        const checkboxWrap =
+          consent.closest(".checkbox-wrap");
+
+
+        if (!consent.checked) {
+
+          checkboxWrap?.classList.add(
+            "consent-error"
+          );
+
+          valid = false;
+
+        } else {
+
+          checkboxWrap?.classList.remove(
+            "consent-error"
+          );
+
+        }
+
       }
+
 
       return valid;
+
     };
 
-    /* Clear errors while typing */
 
-    contactForm.querySelectorAll("input, textarea, select").forEach((input) => {
-      input.addEventListener("input", () => {
-        if (input.value.trim()) {
-          clearError(input);
-        }
+    /* ===================================================
+       CLEAR ERRORS WHILE TYPING
+    =================================================== */
+
+    contactForm
+      .querySelectorAll(
+        "input, textarea, select"
+      )
+      .forEach((input) => {
+
+        input.addEventListener(
+          "input",
+          () => {
+
+            if (
+              input.value.trim()
+            ) {
+
+              clearError(input);
+
+            }
+
+          }
+        );
+
+
+        input.addEventListener(
+          "change",
+          () => {
+
+            if (input.value) {
+
+              clearError(input);
+
+            }
+
+          }
+        );
+
       });
 
-      input.addEventListener("change", () => {
-        if (input.value) {
-          clearError(input);
+
+    /* ===================================================
+       CONSENT CHANGE
+    =================================================== */
+
+    const consent =
+      document.getElementById("consent");
+
+
+    consent?.addEventListener(
+      "change",
+      () => {
+
+        const wrapper =
+          consent.closest(".checkbox-wrap");
+
+        if (consent.checked) {
+
+          wrapper?.classList.remove(
+            "consent-error"
+          );
+
         }
-      });
-    });
 
-    /* Submit */
-
-    contactForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      if (!validateForm()) {
-        formStatus.textContent = "Please check the highlighted fields.";
-
-        formStatus.classList.remove("success");
-
-        return;
       }
+    );
 
-      const submitButton = contactForm.querySelector(".submit-btn");
 
-      submitButton?.classList.add("loading");
+    /* ===================================================
+       FORM SUBMIT
+    =================================================== */
 
-      if (submitButton) {
-        submitButton.querySelector("span").textContent = "SENDING...";
-      }
+    contactForm.addEventListener(
+      "submit",
+      (event) => {
 
-      formStatus.textContent = "";
+        event.preventDefault();
 
-      /* Demo submission */
 
-      setTimeout(() => {
-        submitButton?.classList.remove("loading");
+        if (!validateForm()) {
 
-        if (submitButton) {
-          submitButton.querySelector("span").textContent = "MESSAGE SENT";
+          if (formStatus) {
+
+            formStatus.textContent =
+              "Please check the highlighted fields.";
+
+            formStatus.classList.remove(
+              "success"
+            );
+
+          }
+
+          return;
+
         }
 
-        formStatus.textContent = "Thank you! Your message has been received.";
 
-        formStatus.classList.add("success");
+        const submitButton =
+          contactForm.querySelector(".submit-btn");
 
-        contactForm.reset();
 
-        if (characterCount) {
-          characterCount.textContent = "0 / 500";
+        submitButton?.classList.add(
+          "loading"
+        );
+
+
+        const buttonText =
+          submitButton?.querySelector("span");
+
+
+        if (buttonText) {
+          buttonText.textContent =
+            "SENDING...";
         }
+
+
+        if (formStatus) {
+
+          formStatus.textContent = "";
+
+          formStatus.classList.remove(
+            "success"
+          );
+
+        }
+
+
+        /* ---------------------------------------------
+           DEMO SUBMISSION
+           Replace this with your backend/email
+           service when ready.
+        --------------------------------------------- */
 
         setTimeout(() => {
-          if (submitButton) {
-            submitButton.querySelector("span").textContent = "SEND MESSAGE";
+
+          submitButton?.classList.remove(
+            "loading"
+          );
+
+
+          if (buttonText) {
+
+            buttonText.textContent =
+              "MESSAGE SENT";
+
           }
-        }, 3000);
-      }, 1200);
-    });
+
+
+          if (formStatus) {
+
+            formStatus.textContent =
+              "Thank you! Your message has been received.";
+
+            formStatus.classList.add(
+              "success"
+            );
+
+          }
+
+
+          contactForm.reset();
+
+
+          if (characterCount) {
+
+            characterCount.textContent =
+              "0 / 500";
+
+          }
+
+
+          setTimeout(() => {
+
+            if (buttonText) {
+
+              buttonText.textContent =
+                "SEND MESSAGE";
+
+            }
+
+          }, 3000);
+
+        }, 1200);
+
+      }
+    );
+
   }
+
 
   /* =======================================================
      INPUT FOCUS ANIMATION
@@ -381,144 +749,245 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document
     .querySelectorAll(
-      ".input-wrap input, .input-wrap select, .textarea-wrap textarea",
+      ".input-wrap input, " +
+      ".input-wrap select, " +
+      ".textarea-wrap textarea"
     )
     .forEach((input) => {
-      input.addEventListener("focus", () => {
-        input.closest(".input-wrap, .textarea-wrap")?.classList.add("focused");
-      });
 
-      input.addEventListener("blur", () => {
-        input
-          .closest(".input-wrap, .textarea-wrap")
-          ?.classList.remove("focused");
-      });
+      input.addEventListener(
+        "focus",
+        () => {
+
+          input
+            .closest(
+              ".input-wrap, .textarea-wrap"
+            )
+            ?.classList.add("focused");
+
+        }
+      );
+
+
+      input.addEventListener(
+        "blur",
+        () => {
+
+          input
+            .closest(
+              ".input-wrap, .textarea-wrap"
+            )
+            ?.classList.remove("focused");
+
+        }
+      );
+
     });
+
 
   /* =======================================================
      SMOOTH ANCHOR SCROLL
   ======================================================= */
 
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", (event) => {
-      const targetId = anchor.getAttribute("href");
+  document
+    .querySelectorAll('a[href^="#"]')
+    .forEach((anchor) => {
 
-      if (!targetId || targetId === "#") return;
+      anchor.addEventListener(
+        "click",
+        (event) => {
 
-      const target = document.querySelector(targetId);
+          const targetId =
+            anchor.getAttribute("href");
 
-      if (!target) return;
 
-      event.preventDefault();
+          if (
+            !targetId ||
+            targetId === "#"
+          ) {
 
-      const headerOffset = 85;
+            event.preventDefault();
 
-      const targetPosition =
-        target.getBoundingClientRect().top + window.scrollY - headerOffset;
+            return;
 
-      window.scrollTo({
-        top: targetPosition,
-        behavior: "smooth",
-      });
+          }
+
+
+          const target =
+            document.querySelector(targetId);
+
+
+          if (!target) return;
+
+
+          event.preventDefault();
+
+
+          const headerOffset = 85;
+
+
+          const targetPosition =
+            target.getBoundingClientRect().top +
+            window.scrollY -
+            headerOffset;
+
+
+          window.scrollTo({
+            top: targetPosition,
+            behavior: "smooth"
+          });
+
+        }
+      );
+
     });
-  });
+
 
   /* =======================================================
-     CUSTOM CURSOR
+     HERO IMAGE PARALLAX
   ======================================================= */
 
-  const cursorDot = document.querySelector(".cursor-dot");
+  const heroImage =
+    document.querySelector(".hero-image-wrap");
 
-  const cursorRing = document.querySelector(".cursor-ring");
 
-  const finePointer = window.matchMedia("(pointer: fine)").matches;
+  const finePointer =
+    window.matchMedia(
+      "(hover: hover) and (pointer: fine)"
+    ).matches;
 
-  if (finePointer && cursorDot && cursorRing) {
-    let mouseX = 0;
-    let mouseY = 0;
 
-    let ringX = 0;
-    let ringY = 0;
+  if (heroImage && finePointer) {
+
+    let ticking = false;
+
 
     window.addEventListener(
       "mousemove",
       (event) => {
-        mouseX = event.clientX;
-        mouseY = event.clientY;
 
-        cursorDot.style.left = `${mouseX}px`;
+        if (ticking) return;
 
-        cursorDot.style.top = `${mouseY}px`;
+        ticking = true;
+
+
+        requestAnimationFrame(() => {
+
+          const x =
+            (window.innerWidth / 2 -
+              event.clientX) / 70;
+
+          const y =
+            (window.innerHeight / 2 -
+              event.clientY) / 70;
+
+
+          heroImage.style.transform =
+            `translate(${x}px, ${y}px)`;
+
+
+          ticking = false;
+
+        });
+
       },
-      { passive: true },
+      { passive: true }
     );
 
-    const animateCursor = () => {
-      ringX += (mouseX - ringX) * 0.14;
 
-      ringY += (mouseY - ringY) * 0.14;
+    /* Reset parallax */
 
-      cursorRing.style.left = `${ringX}px`;
-
-      cursorRing.style.top = `${ringY}px`;
-
-      requestAnimationFrame(animateCursor);
-    };
-
-    animateCursor();
-
-    document
-      .querySelectorAll("a, button, input, textarea, select")
-      .forEach((element) => {
-        element.addEventListener("mouseenter", () => {
-          cursorRing.classList.add("active");
-        });
-
-        element.addEventListener("mouseleave", () => {
-          cursorRing.classList.remove("active");
-        });
-      });
-  }
-
-  /* =======================================================
-     PARALLAX HERO IMAGE
-  ======================================================= */
-
-  const heroImage = document.querySelector(".hero-image-wrap");
-
-  if (heroImage && window.matchMedia("(pointer: fine)").matches) {
     window.addEventListener(
-      "mousemove",
-      (event) => {
-        const x = (window.innerWidth / 2 - event.clientX) / 70;
+      "mouseleave",
+      () => {
 
-        const y = (window.innerHeight / 2 - event.clientY) / 70;
+        heroImage.style.transform =
+          "translate(0, 0)";
 
-        heroImage.style.transform = `translate(${x}px, ${y}px)`;
-      },
-      { passive: true },
+      }
     );
+
   }
+
 
   /* =======================================================
      IMAGE ERROR FALLBACK
   ======================================================= */
 
-  document.querySelectorAll("img").forEach((image) => {
-    image.addEventListener("error", () => {
-      image.style.display = "none";
+  document
+    .querySelectorAll("img")
+    .forEach((image) => {
 
-      image.closest(".hero-image")?.classList.add("image-fallback");
+      image.addEventListener(
+        "error",
+        () => {
+
+          image.style.display = "none";
+
+          image
+            .closest(".hero-image")
+            ?.classList.add(
+              "image-fallback"
+            );
+
+        }
+      );
+
     });
-  });
+
+
+  /* =======================================================
+     RESIZE HANDLING
+  ======================================================= */
+
+  window.addEventListener(
+    "resize",
+    () => {
+
+      /* Close mobile menu on desktop */
+
+      if (window.innerWidth > 900) {
+        closeMenu();
+      }
+
+
+      /* Recalculate opened FAQ */
+
+      document
+        .querySelectorAll(".faq-item.open")
+        .forEach((item) => {
+
+          const answer =
+            item.querySelector(".faq-answer");
+
+          if (answer) {
+
+            answer.style.maxHeight =
+              `${answer.scrollHeight}px`;
+
+          }
+
+        });
+
+    }
+  );
+
 
   /* =======================================================
      CURRENT YEAR
   ======================================================= */
 
-  const yearElement = document.querySelector(".footer-bottom span:first-child");
+  const yearElement =
+    document.querySelector(
+      ".footer-bottom span:first-child"
+    );
+
 
   if (yearElement) {
-    yearElement.textContent = `© ${new Date().getFullYear()} DESISTEPS. All rights reserved.`;
+
+    yearElement.textContent =
+      `© ${new Date().getFullYear()} DESISTEPS. All rights reserved.`;
+
   }
+
 });
