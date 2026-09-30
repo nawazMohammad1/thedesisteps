@@ -7,7 +7,31 @@
 /* =========================================================
    ROOT
 ========================================================= */
+html,
+body {
+  cursor: auto;
+}
 
+a,
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  cursor: text;
+}
+
+.cursor-dot,
+.cursor-ring {
+  display: none !important;
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
 :root {
   --cream: #f7f0e5;
   --cream-dark: #eadfce;
