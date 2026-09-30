@@ -1,501 +1,1102 @@
 /* =========================================================
    DESISTEPS
    COLLECTION PAGE JAVASCRIPT
+   Walk Your Tradition
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+
   /* =======================================================
      PRELOADER
   ======================================================= */
 
-  const preloader = document.querySelector(".preloader");
+  const preloader =
+    document.querySelector(".preloader");
+
+
+  function hidePreloader() {
+
+    if (!preloader) return;
+
+    preloader.classList.add("hide");
+
+    setTimeout(() => {
+      preloader.style.display = "none";
+    }, 700);
+
+  }
+
 
   window.addEventListener("load", () => {
-    setTimeout(() => {
-      preloader.classList.add("hide");
-    }, 500);
+
+    setTimeout(hidePreloader, 500);
+
   });
+
+
+  /* Fallback */
+
+  setTimeout(hidePreloader, 3000);
+
 
   /* =======================================================
      NAVBAR SCROLL
   ======================================================= */
 
-  const navbar = document.querySelector(".navbar");
+  const navbar =
+    document.querySelector(".navbar");
 
-  const handleNavbar = () => {
+
+  function handleNavbar() {
+
+    if (!navbar) return;
+
     if (window.scrollY > 40) {
-      navbar.classList.add("scrolled");
-    } else {
-      navbar.classList.remove("scrolled");
-    }
-  };
 
-  window.addEventListener("scroll", handleNavbar);
+      navbar.classList.add("scrolled");
+
+    } else {
+
+      navbar.classList.remove("scrolled");
+
+    }
+
+  }
+
+
+  window.addEventListener(
+    "scroll",
+    handleNavbar,
+    { passive: true }
+  );
+
 
   handleNavbar();
+
 
   /* =======================================================
      MOBILE MENU
   ======================================================= */
 
-  const menuToggle = document.querySelector(".menu-toggle");
-  const mobileMenu = document.querySelector(".mobile-menu");
+  const menuToggle =
+    document.querySelector(".menu-toggle");
 
-  menuToggle?.addEventListener("click", () => {
-    const isOpen = mobileMenu.classList.toggle("active");
+  const mobileMenu =
+    document.querySelector(".mobile-menu");
 
-    document.body.classList.toggle("menu-open", isOpen);
 
-    menuToggle.setAttribute("aria-expanded", isOpen);
-  });
+  function openMobileMenu() {
 
-  /* CLOSE MOBILE MENU */
+    if (!menuToggle || !mobileMenu) return;
 
-  document.querySelectorAll(".mobile-menu a").forEach((link) => {
-    link.addEventListener("click", () => {
-      mobileMenu.classList.remove("active");
+    menuToggle.classList.add("active");
 
-      document.body.classList.remove("menu-open");
+    mobileMenu.classList.add("active");
 
-      menuToggle.setAttribute("aria-expanded", "false");
+    document.body.classList.add("menu-open");
+
+    menuToggle.setAttribute(
+      "aria-expanded",
+      "true"
+    );
+
+  }
+
+
+  function closeMobileMenu() {
+
+    if (!menuToggle || !mobileMenu) return;
+
+    menuToggle.classList.remove("active");
+
+    mobileMenu.classList.remove("active");
+
+    document.body.classList.remove("menu-open");
+
+    menuToggle.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+
+  }
+
+
+  menuToggle?.addEventListener(
+    "click",
+    () => {
+
+      const isOpen =
+        mobileMenu?.classList.contains("active");
+
+      if (isOpen) {
+
+        closeMobileMenu();
+
+      } else {
+
+        openMobileMenu();
+
+      }
+
+    }
+  );
+
+
+  /* Close mobile menu after navigation */
+
+  document
+    .querySelectorAll(".mobile-menu a")
+    .forEach((link) => {
+
+      link.addEventListener(
+        "click",
+        () => {
+
+          closeMobileMenu();
+
+        }
+      );
+
     });
-  });
+
 
   /* =======================================================
      SEARCH OVERLAY
   ======================================================= */
 
-  const searchTrigger = document.querySelector(".search-trigger");
+  const searchTrigger =
+    document.querySelector(".search-trigger");
 
-  const searchOverlay = document.querySelector(".search-overlay");
+  const searchOverlay =
+    document.querySelector(".search-overlay");
 
-  const closeSearch = document.querySelector(".close-search");
+  const closeSearch =
+    document.querySelector(".close-search");
 
-  const searchInput = document.querySelector("#searchInput");
+  const searchInput =
+    document.querySelector("#searchInput");
 
-  searchTrigger?.addEventListener("click", () => {
+  const searchButton =
+    document.querySelector("#searchButton");
+
+
+  function openSearch() {
+
+    if (!searchOverlay) return;
+
     searchOverlay.classList.add("active");
 
     document.body.classList.add("search-open");
 
     setTimeout(() => {
-      searchInput?.focus();
-    }, 400);
-  });
 
-  closeSearch?.addEventListener("click", () => {
+      searchInput?.focus();
+
+    }, 350);
+
+  }
+
+
+  function closeSearchOverlay() {
+
+    if (!searchOverlay) return;
+
     searchOverlay.classList.remove("active");
 
     document.body.classList.remove("search-open");
-  });
 
-  /* ESCAPE */
+  }
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      searchOverlay?.classList.remove("active");
 
-      document.body.classList.remove("search-open");
+  searchTrigger?.addEventListener(
+    "click",
+    openSearch
+  );
+
+
+  closeSearch?.addEventListener(
+    "click",
+    closeSearchOverlay
+  );
+
+
+  /* =======================================================
+     ESCAPE KEY
+  ======================================================= */
+
+  document.addEventListener(
+    "keydown",
+    (event) => {
+
+      if (event.key !== "Escape") return;
+
+      closeSearchOverlay();
+
+      closeMobileMenu();
+
     }
-  });
+  );
+
+
+  /* =======================================================
+     PRODUCT ELEMENTS
+  ======================================================= */
+
+  const productCards = [
+    ...document.querySelectorAll(".product-card")
+  ];
+
+  const productCount =
+    document.querySelector("#productCount");
+
+  const emptyState =
+    document.querySelector("#emptyState");
+
+
+  function updateProductCount(count) {
+
+    if (!productCount) return;
+
+    productCount.textContent =
+      String(count).padStart(2, "0");
+
+  }
+
+
+  function updateEmptyState(count) {
+
+    if (!emptyState) return;
+
+    if (count === 0) {
+
+      emptyState.classList.add("show");
+
+    } else {
+
+      emptyState.classList.remove("show");
+
+    }
+
+  }
+
 
   /* =======================================================
      SEARCH PRODUCTS
   ======================================================= */
 
-  const searchButton = document.querySelector("#searchButton");
-
-  const productCards = [...document.querySelectorAll(".product-card")];
-
-  const productCount = document.querySelector("#productCount");
-
   function searchProducts() {
-    const query = searchInput.value.trim().toLowerCase();
+
+    if (!searchInput) return;
+
+    const query =
+      searchInput.value
+        .trim()
+        .toLowerCase();
+
 
     let visibleCount = 0;
 
+
     productCards.forEach((card) => {
-      const productName = card.dataset.name.toLowerCase();
 
-      const category = card.dataset.category.toLowerCase();
+      const productName =
+        card.dataset.name?.toLowerCase() || "";
 
-      const matches = productName.includes(query) || category.includes(query);
+      const category =
+        card.dataset.category?.toLowerCase() || "";
 
-      if (!query || matches) {
+      const cardText =
+        card.textContent.toLowerCase();
+
+
+      const matches =
+        !query ||
+        productName.includes(query) ||
+        category.includes(query) ||
+        cardText.includes(query);
+
+
+      if (matches) {
+
+        card.classList.remove("hide");
+
         card.style.display = "";
 
         visibleCount++;
+
       } else {
+
+        card.classList.add("hide");
+
         card.style.display = "none";
+
       }
+
     });
 
-    productCount.textContent = visibleCount;
 
-    searchOverlay.classList.remove("active");
+    updateProductCount(visibleCount);
 
-    document.body.classList.remove("search-open");
+    updateEmptyState(visibleCount);
 
-    document.querySelector("#collection")?.scrollIntoView({
-      behavior: "smooth",
-    });
+    closeSearchOverlay();
+
+
+    document
+      .querySelector("#collection")
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
   }
 
-  searchButton?.addEventListener("click", searchProducts);
 
-  searchInput?.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
+  searchButton?.addEventListener(
+    "click",
+    searchProducts
+  );
+
+
+  searchInput?.addEventListener(
+    "keydown",
+    (event) => {
+
+      if (event.key !== "Enter") return;
+
       event.preventDefault();
 
       searchProducts();
+
     }
-  });
+  );
+
 
   /* =======================================================
      CATEGORY FILTER
   ======================================================= */
 
-  const filterButtons = document.querySelectorAll(".filter-btn");
+  const filterButtons =
+    document.querySelectorAll(".filter-btn");
+
+
+  function filterProducts(filter = "all") {
+
+    let visibleCount = 0;
+
+
+    productCards.forEach((card) => {
+
+      const category =
+        card.dataset.category || "";
+
+
+      const shouldShow =
+        filter === "all" ||
+        category === filter;
+
+
+      if (shouldShow) {
+
+        card.classList.remove("hide");
+
+        card.style.display = "";
+
+        visibleCount++;
+
+      } else {
+
+        card.classList.add("hide");
+
+        card.style.display = "none";
+
+      }
+
+    });
+
+
+    updateProductCount(visibleCount);
+
+    updateEmptyState(visibleCount);
+
+  }
+
 
   filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const filter = button.dataset.filter;
 
-      filterButtons.forEach((btn) => {
-        btn.classList.remove("active");
-      });
+    button.addEventListener(
+      "click",
+      () => {
 
-      button.classList.add("active");
+        const filter =
+          button.dataset.filter || "all";
 
-      let visibleCount = 0;
 
-      productCards.forEach((card) => {
-        const category = card.dataset.category;
+        filterButtons.forEach((btn) => {
 
-        const shouldShow = filter === "all" || category === filter;
+          btn.classList.remove("active");
 
-        if (shouldShow) {
-          card.classList.remove("hide");
+        });
 
-          card.style.display = "";
 
-          visibleCount++;
-        } else {
-          card.classList.add("hide");
+        button.classList.add("active");
 
-          setTimeout(() => {
-            if (card.classList.contains("hide")) {
-              card.style.display = "none";
-            }
-          }, 400);
-        }
-      });
 
-      productCount.textContent = visibleCount;
-    });
+        filterProducts(filter);
+
+      }
+    );
+
   });
+
 
   /* =======================================================
      WISHLIST
   ======================================================= */
 
-  const wishlistButtons = document.querySelectorAll(".wishlist-product");
+  const wishlistButtons =
+    document.querySelectorAll(
+      ".wishlist-product"
+    );
 
-  const wishlistCount = document.querySelector(".wishlist-count");
+
+  const wishlistCountElements =
+    document.querySelectorAll(
+      ".wishlist-count"
+    );
+
 
   let wishlistTotal = 0;
 
-  wishlistButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const isActive = button.classList.toggle("active");
 
-      const icon = button.querySelector("i");
+  function updateWishlistCount() {
 
-      if (isActive) {
-        icon.classList.remove("fa-regular");
+    wishlistCountElements.forEach(
+      (element) => {
 
-        icon.classList.add("fa-solid");
+        element.textContent =
+          wishlistTotal;
 
-        wishlistTotal++;
-      } else {
-        icon.classList.remove("fa-solid");
-
-        icon.classList.add("fa-regular");
-
-        wishlistTotal--;
       }
+    );
 
-      wishlistCount.textContent = wishlistTotal;
+  }
 
-      /* SMALL ANIMATION */
 
-      button.animate(
-        [
-          {
-            transform: "scale(1)",
-          },
-          {
-            transform: "scale(1.25)",
-          },
-          {
-            transform: "scale(1)",
-          },
-        ],
-        {
-          duration: 350,
-        },
-      );
-    });
+  wishlistButtons.forEach((button) => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const isActive =
+          button.classList.toggle("active");
+
+
+        const icon =
+          button.querySelector("i");
+
+
+        if (isActive) {
+
+          icon?.classList.remove(
+            "fa-regular"
+          );
+
+          icon?.classList.add(
+            "fa-solid"
+          );
+
+          wishlistTotal++;
+
+        } else {
+
+          icon?.classList.remove(
+            "fa-solid"
+          );
+
+          icon?.classList.add(
+            "fa-regular"
+          );
+
+          wishlistTotal =
+            Math.max(
+              0,
+              wishlistTotal - 1
+            );
+
+        }
+
+
+        updateWishlistCount();
+
+
+        /* Small wishlist animation */
+
+        if (button.animate) {
+
+          button.animate(
+            [
+              {
+                transform: "scale(1)"
+              },
+              {
+                transform: "scale(1.25)"
+              },
+              {
+                transform: "scale(1)"
+              }
+            ],
+            {
+              duration: 350,
+              easing: "ease-out"
+            }
+          );
+
+        }
+
+      }
+    );
+
   });
+
 
   /* =======================================================
      ADD TO BAG
   ======================================================= */
 
-  const quickAddButtons = document.querySelectorAll(".quick-add");
+  const quickAddButtons =
+    document.querySelectorAll(
+      ".quick-add"
+    );
 
-  const bagCount = document.querySelector(".bag-count");
 
-  const cartToast = document.querySelector(".cart-toast");
+  const bagCountElements =
+    document.querySelectorAll(
+      ".bag-count, .cart-count"
+    );
 
-  const toastProduct = document.querySelector(".toast-product");
+
+  const cartToast =
+    document.querySelector(".cart-toast");
+
+
+  const toastProduct =
+    document.querySelector(".toast-product");
+
 
   let bagTotal = 0;
 
   let toastTimer;
 
+
+  function updateBagCount() {
+
+    bagCountElements.forEach(
+      (element) => {
+
+        element.textContent =
+          bagTotal;
+
+      }
+    );
+
+  }
+
+
   quickAddButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const product = button.dataset.product;
 
-      bagTotal++;
+    button.addEventListener(
+      "click",
+      () => {
 
-      bagCount.textContent = bagTotal;
+        const product =
+          button.dataset.product ||
+          "Product";
 
-      toastProduct.textContent = product;
 
-      cartToast.classList.add("show");
+        bagTotal++;
 
-      clearTimeout(toastTimer);
+        updateBagCount();
 
-      toastTimer = setTimeout(() => {
-        cartToast.classList.remove("show");
-      }, 2500);
 
-      /* BUTTON FEEDBACK */
+        if (toastProduct) {
 
-      const originalText = button.textContent;
+          toastProduct.textContent =
+            product;
 
-      button.textContent = "ADDED ✓";
+        }
 
-      button.style.background = "#7d1f25";
 
-      setTimeout(() => {
-        button.textContent = originalText;
+        cartToast?.classList.add(
+          "show"
+        );
 
-        button.style.background = "";
-      }, 1200);
-    });
+
+        clearTimeout(toastTimer);
+
+
+        toastTimer =
+          setTimeout(() => {
+
+            cartToast?.classList.remove(
+              "show"
+            );
+
+          }, 2500);
+
+
+        /* Button feedback */
+
+        const originalText =
+          button.textContent;
+
+
+        button.textContent =
+          "ADDED ✓";
+
+
+        button.classList.add(
+          "added"
+        );
+
+
+        setTimeout(() => {
+
+          button.textContent =
+            originalText;
+
+          button.classList.remove(
+            "added"
+          );
+
+        }, 1200);
+
+      }
+    );
+
   });
+
 
   /* =======================================================
      SCROLL REVEAL
   ======================================================= */
 
-  const revealElements = document.querySelectorAll(".reveal");
+  const revealElements =
+    document.querySelectorAll(".reveal");
 
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
 
-          revealObserver.unobserve(entry.target);
+  if ("IntersectionObserver" in window) {
+
+    const revealObserver =
+      new IntersectionObserver(
+        (entries, observer) => {
+
+          entries.forEach((entry) => {
+
+            if (!entry.isIntersecting) return;
+
+
+            /*
+              IMPORTANT:
+              DESISTEPS collection CSS
+              uses .reveal.active
+            */
+
+            entry.target.classList.add(
+              "active"
+            );
+
+
+            observer.unobserve(
+              entry.target
+            );
+
+          });
+
+        },
+        {
+          threshold: 0.12,
+          rootMargin:
+            "0px 0px -40px 0px"
         }
-      });
-    },
-    {
-      threshold: 0.12,
-    },
-  );
+      );
 
-  revealElements.forEach((element) => {
-    revealObserver.observe(element);
-  });
+
+    revealElements.forEach(
+      (element) => {
+
+        revealObserver.observe(
+          element
+        );
+
+      }
+    );
+
+  } else {
+
+    revealElements.forEach(
+      (element) => {
+
+        element.classList.add(
+          "active"
+        );
+
+      }
+    );
+
+  }
+
 
   /* =======================================================
      STAGGER PRODUCT ANIMATION
   ======================================================= */
 
-  productCards.forEach((card, index) => {
-    card.style.transitionDelay = `${index * 70}ms`;
-  });
+  productCards.forEach(
+    (card, index) => {
+
+      card.style.transitionDelay =
+        `${index * 70}ms`;
+
+    }
+  );
+
 
   /* =======================================================
      NEWSLETTER
   ======================================================= */
 
-  const newsletterForm = document.querySelector("#newsletterForm");
+  const newsletterForm =
+    document.querySelector(
+      "#newsletterForm"
+    );
 
-  const newsletterEmail = document.querySelector("#newsletterEmail");
 
-  newsletterForm?.addEventListener("submit", (event) => {
-    event.preventDefault();
+  const newsletterEmail =
+    document.querySelector(
+      "#newsletterEmail"
+    );
 
-    const email = newsletterEmail.value.trim();
 
-    if (!email) {
-      return;
+  newsletterForm?.addEventListener(
+    "submit",
+    (event) => {
+
+      event.preventDefault();
+
+
+      const email =
+        newsletterEmail?.value
+          .trim() || "";
+
+
+      if (!email) {
+
+        newsletterEmail?.focus();
+
+        return;
+
+      }
+
+
+      const button =
+        newsletterForm.querySelector(
+          "button"
+        );
+
+
+      if (!button) return;
+
+
+      const original =
+        button.innerHTML;
+
+
+      button.innerHTML =
+        `SUBSCRIBED <i class="fa-solid fa-check"></i>`;
+
+
+      if (newsletterEmail) {
+        newsletterEmail.value = "";
+      }
+
+
+      setTimeout(() => {
+
+        button.innerHTML =
+          original;
+
+      }, 3000);
+
     }
+  );
 
-    const button = newsletterForm.querySelector("button");
-
-    const original = button.innerHTML;
-
-    button.innerHTML = `SUBSCRIBED <i class="fa-solid fa-check"></i>`;
-
-    newsletterEmail.value = "";
-
-    setTimeout(() => {
-      button.innerHTML = original;
-    }, 3000);
-  });
 
   /* =======================================================
      SMOOTH INTERNAL LINKS
   ======================================================= */
 
-  document.querySelectorAll('a[href^="#"]').forEach((link) => {
-    link.addEventListener("click", (event) => {
-      const targetId = link.getAttribute("href");
+  document
+    .querySelectorAll(
+      'a[href^="#"]'
+    )
+    .forEach((link) => {
 
-      if (!targetId || targetId === "#") {
-        return;
-      }
+      link.addEventListener(
+        "click",
+        (event) => {
 
-      const target = document.querySelector(targetId);
+          const targetId =
+            link.getAttribute("href");
 
-      if (!target) {
-        return;
-      }
 
-      event.preventDefault();
+          if (
+            !targetId ||
+            targetId === "#"
+          ) {
 
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+            event.preventDefault();
+
+            return;
+
+          }
+
+
+          const target =
+            document.querySelector(
+              targetId
+            );
+
+
+          if (!target) return;
+
+
+          event.preventDefault();
+
+
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+        }
+      );
+
     });
-  });
+
 
   /* =======================================================
-     CUSTOM CURSOR
+     HERO PARALLAX
   ======================================================= */
 
-  const cursorDot = document.querySelector(".cursor-dot");
+  const hero =
+    document.querySelector(
+      ".collection-hero"
+    );
 
-  const cursorRing = document.querySelector(".cursor-ring");
 
-  if (window.matchMedia("(pointer: fine)").matches) {
-    let mouseX = 0;
-    let mouseY = 0;
+  const finePointer =
+    window.matchMedia(
+      "(hover: hover) and (pointer: fine)"
+    ).matches;
 
-    let ringX = 0;
-    let ringY = 0;
 
-    document.addEventListener("mousemove", (event) => {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
+  function updateHeroParallax() {
 
-      cursorDot.style.left = `${mouseX}px`;
+    if (!hero || !finePointer) return;
 
-      cursorDot.style.top = `${mouseY}px`;
-    });
 
-    function animateCursor() {
-      ringX += (mouseX - ringX) * 0.15;
+    if (window.innerWidth < 900) {
 
-      ringY += (mouseY - ringY) * 0.15;
+      hero.style.backgroundPosition =
+        "";
 
-      cursorRing.style.left = `${ringX}px`;
+      return;
 
-      cursorRing.style.top = `${ringY}px`;
-
-      requestAnimationFrame(animateCursor);
     }
 
-    animateCursor();
 
-    document.querySelectorAll("a, button").forEach((element) => {
-      element.addEventListener("mouseenter", () => {
-        cursorRing.style.width = "48px";
+    const scroll =
+      window.scrollY;
 
-        cursorRing.style.height = "48px";
-      });
 
-      element.addEventListener("mouseleave", () => {
-        cursorRing.style.width = "34px";
+    if (scroll < window.innerHeight) {
 
-        cursorRing.style.height = "34px";
-      });
-    });
+      hero.style.backgroundPosition =
+        `center ${scroll * 0.15}px`;
+
+    }
+
   }
 
-  /* =======================================================
-     PARALLAX HERO
-  ======================================================= */
 
-  const hero = document.querySelector(".collection-hero");
+  if (hero && finePointer) {
 
-  if (hero && window.matchMedia("(pointer: fine)").matches) {
-    window.addEventListener("scroll", () => {
-      const scroll = window.scrollY;
+    window.addEventListener(
+      "scroll",
+      updateHeroParallax,
+      { passive: true }
+    );
 
-      if (scroll < window.innerHeight) {
-        hero.style.backgroundPosition = `center ${scroll * 0.15}px`;
-      }
-    });
+
+    updateHeroParallax();
+
   }
+
 
   /* =======================================================
      PRODUCT CARD TILT
   ======================================================= */
 
-  if (window.matchMedia("(pointer: fine)").matches) {
+  if (finePointer) {
+
     productCards.forEach((card) => {
-      card.addEventListener("mousemove", (event) => {
-        const rect = card.getBoundingClientRect();
 
-        const x = event.clientX - rect.left;
+      let rafId = null;
 
-        const y = event.clientY - rect.top;
 
-        const rotateY = (x / rect.width - 0.5) * 4;
+      card.addEventListener(
+        "mousemove",
+        (event) => {
 
-        const rotateX = (y / rect.height - 0.5) * -4;
+          if (rafId) return;
 
-        card.style.transform = `perspective(900px)
-             rotateX(${rotateX}deg)
-             rotateY(${rotateY}deg)`;
-      });
 
-      card.addEventListener("mouseleave", () => {
-        card.style.transform = "";
-      });
+          rafId =
+            requestAnimationFrame(() => {
+
+              const rect =
+                card.getBoundingClientRect();
+
+
+              const x =
+                event.clientX -
+                rect.left;
+
+
+              const y =
+                event.clientY -
+                rect.top;
+
+
+              const rotateY =
+                (x / rect.width - 0.5) * 4;
+
+
+              const rotateX =
+                (y / rect.height - 0.5) * -4;
+
+
+              card.style.transform =
+                `perspective(900px)
+                 rotateX(${rotateX}deg)
+                 rotateY(${rotateY}deg)`;
+
+
+              rafId = null;
+
+            });
+
+        }
+      );
+
+
+      card.addEventListener(
+        "mouseleave",
+        () => {
+
+          if (rafId) {
+
+            cancelAnimationFrame(
+              rafId
+            );
+
+            rafId = null;
+
+          }
+
+
+          card.style.transform = "";
+
+        }
+      );
+
     });
+
   }
+
 
   /* =======================================================
      IMAGE FALLBACK
   ======================================================= */
 
   document
-    .querySelectorAll(".product-image img, .heritage-image img")
+    .querySelectorAll(
+      ".product-image img, .heritage-image img"
+    )
     .forEach((image) => {
-      image.addEventListener("error", () => {
-        image.style.display = "none";
 
-        image.parentElement.classList.add("image-error");
-      });
+      image.addEventListener(
+        "error",
+        () => {
+
+          image.style.display =
+            "none";
+
+
+          image.parentElement
+            ?.classList.add(
+              "image-error"
+            );
+
+        }
+      );
+
     });
+
+
+  /* =======================================================
+     RESIZE HANDLING
+  ======================================================= */
+
+  window.addEventListener(
+    "resize",
+    () => {
+
+      /* Close mobile menu on desktop */
+
+      if (window.innerWidth > 900) {
+
+        closeMobileMenu();
+
+      }
+
+
+      /* Disable tilt transform on smaller screens */
+
+      if (window.innerWidth <= 900) {
+
+        productCards.forEach(
+          (card) => {
+
+            card.style.transform = "";
+
+          }
+        );
+
+      }
+
+
+      updateHeroParallax();
+
+    }
+  );
+
+
+  /* =======================================================
+     INITIAL PRODUCT COUNT
+  ======================================================= */
+
+  filterProducts("all");
+
 });
