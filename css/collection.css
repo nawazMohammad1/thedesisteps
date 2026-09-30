@@ -2246,3 +2246,20 @@ a {
     transform: none;
   }
 }
+
+
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
