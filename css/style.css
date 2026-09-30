@@ -199,52 +199,6 @@ a {
 }
 
 /* =========================================================
-   CUSTOM CURSOR
-   ========================================================= */
-
-.cursor-dot,
-.cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-
-  pointer-events: none;
-  z-index: 10000;
-
-  border-radius: 50%;
-}
-
-.cursor-dot {
-  width: 6px;
-  height: 6px;
-
-  background: var(--maroon);
-
-  transform: translate(-50%, -50%);
-}
-
-.cursor-ring {
-  width: 35px;
-  height: 35px;
-
-  border: 1px solid var(--maroon);
-
-  transform: translate(-50%, -50%);
-
-  transition:
-    width 0.2s ease,
-    height 0.2s ease,
-    background 0.2s ease;
-}
-
-.cursor-ring.hover {
-  width: 55px;
-  height: 55px;
-
-  background: rgba(125, 31, 37, 0.08);
-}
-
-/* =========================================================
    NAVBAR
    ========================================================= */
 
